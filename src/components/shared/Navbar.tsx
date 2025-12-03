@@ -1,11 +1,13 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,10 +69,21 @@ export default function Navbar() {
             </Link>
           ))}
         </nav>
-        <Link href={'/auth/signup'} className="group relative flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:scale-105 active:scale-95">
-          <span className="relative z-10 truncate">Sign Up</span>
-          <div className="absolute inset-0 bg-linear-to-r from-primary via-blue-600 to-primary bg-size-[200%_100%] animate-[shimmer_3s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </Link>
+        {status === "authenticated" ? (
+          <div className="flex items-center gap-3">
+            <span className="text-white/60 text-sm">{session?.user?.email}</span>
+            <button className="group relative flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 border border-primary/50 text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-lg hover:shadow-primary/50 hover:scale-110 active:scale-95">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+            </button>
+          </div>
+        ) : (
+          <Link href={'/auth/signup'} className="group relative flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:scale-105 active:scale-95">
+            <span className="relative z-10 truncate">Sign Up</span>
+            <div className="absolute inset-0 bg-linear-to-r from-primary via-blue-600 to-primary bg-size-[200%_100%] animate-[shimmer_3s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </Link>
+        )}
       </div>
     </header>
   );
