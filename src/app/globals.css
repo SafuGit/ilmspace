@@ -1,9 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "var(--font-lexend)", sans-serif;
+  --font-display: var(--font-lexend), sans-serif;
   
   --color-primary: #0f68e6;
   --color-background-light: #f6f7f8;
   --color-background-dark: #101722;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
