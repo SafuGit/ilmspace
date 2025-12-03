@@ -48,7 +48,7 @@ export default function Navbar() {
       <div className="hidden md:flex flex-1 justify-end gap-8 items-center">
         <nav className="flex items-center gap-9">
           {[
-            { name: "Features", href: "#features" },
+            { name: "Features", href: "/features" },
             { name: "About", href: "#about" },
           ].map((link) => (
             <Link
