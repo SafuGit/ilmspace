@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Lexend } from "next/font/google";
 import "material-symbols/outlined.css";
 import "./globals.css";
-import Navbar from "@/shared/Navbar";
+import Navbar from "@/components/shared/Navbar";
 
 const lexend = Lexend({
   variable: "--font-lexend",
