@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Lexend } from "next/font/google";
 import "material-symbols/outlined.css";
 import "./globals.css";
-import Navbar from "@/shared/Navbar";
+import Navbar from "@/components/shared/Navbar";
+import Providers from "@/components/Providers";
 
 const lexend = Lexend({
   variable: "--font-lexend",
@@ -25,8 +26,10 @@ export default function RootLayout({
       <body
         className={`${lexend.variable} font-display antialiased bg-background-dark text-white`}
       >
-        <Navbar />
-        {children}
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
