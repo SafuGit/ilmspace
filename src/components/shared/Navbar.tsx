@@ -1,12 +1,13 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
   const { data: session, status } = useSession();
 
   useEffect(() => {
@@ -70,13 +71,38 @@ export default function Navbar() {
           ))}
         </nav>
         {status === "authenticated" ? (
-          <div className="flex items-center gap-3">
-            <span className="text-white/60 text-sm">{session?.user?.email}</span>
-            <button className="group relative flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 border border-primary/50 text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-lg hover:shadow-primary/50 hover:scale-110 active:scale-95">
+          <div className="relative flex items-center gap-3">
+            <button 
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="group relative flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 border border-primary/50 text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-lg hover:shadow-primary/50 hover:scale-110 active:scale-95 cursor-pointer"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
               </svg>
             </button>
+            
+            {/* Dropdown Menu */}
+            <div className={`absolute top-14 right-0 w-56 bg-background-dark/95 backdrop-blur-xl border border-white/20 rounded-lg shadow-2xl shadow-primary/10 overflow-hidden transition-all duration-300 origin-top-right ${
+              showDropdown 
+                ? 'opacity-100 scale-100 translate-y-0' 
+                : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+            }`}>
+              <div className="p-4 border-b border-white/10">
+                <p className="text-white/60 text-xs mb-1">Signed in as</p>
+                <p className="text-white text-sm font-medium truncate">{session?.user?.email}</p>
+              </div>
+              <div className="p-2">
+                <button 
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 text-sm font-medium transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 cursor-pointer group"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                  </svg>
+                  Sign Out
+                </button>
+              </div>
+            </div>
           </div>
         ) : (
           <Link href={'/auth/signup'} className="group relative flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:scale-105 active:scale-95">
