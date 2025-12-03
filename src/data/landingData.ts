@@ -101,7 +101,7 @@ export const landingData = {
   },
 
   footer: {
-    copyright: "© 2024 IlmSpace. All rights reserved.",
+    copyright: "© 2025 IlmSpace (Safwan Sadid). All rights reserved.",
     links: [
       { text: "Terms of Service", href: "#" },
       { text: "Privacy Policy", href: "#" },
