@@ -22,7 +22,13 @@ export default function Signup() {
   };
 
   const handleDiscordLogin = () => {
-    // TODO: Implement Discord OAuth
+    try {
+      signIn('discord').then(() => {
+        console.log("Signed up with discord")
+      })
+    } catch {
+      throw "An error occured."
+    }
     console.log("Discord login clicked");
   };
 

@@ -3,6 +3,7 @@ import { sendVerificationRequest } from "@/lib/sendEmail";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import EmailProvider from "next-auth/providers/email";
+import DiscordProvider from "next-auth/providers/discord";
 
 const handler = NextAuth({
   providers: [
@@ -18,6 +19,10 @@ const handler = NextAuth({
       from: process.env.EMAIL_FROM,
       sendVerificationRequest: sendVerificationRequest
     }),
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID as string,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET as string
+    })
   ],
   session: {
     strategy: "jwt",
