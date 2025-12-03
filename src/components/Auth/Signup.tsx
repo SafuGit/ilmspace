@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,13 @@ export default function Signup() {
   const handleMagicLinkSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    try {
+      signIn('email', { email }).then(() => {
+        console.log("Signed up.")
+      })
+    } catch {
+      throw "An error occured."
+    }
     console.log("Sending magic link to:", email);
   };
 
