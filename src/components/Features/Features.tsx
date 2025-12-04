@@ -2,7 +2,7 @@
 
 import FeatureHero from "./FeatureHero";
 import DetailedFeaturesSection from "./DetailedFeaturesSection";
-import Footer from "../Landing/Footer";
+import Footer from "../shared/Footer";
 import { featuresData } from "@/data/featuresData";
 import { landingData } from "@/data/landingData";
 

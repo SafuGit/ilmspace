@@ -44,8 +44,7 @@ export default function Navbar() {
         <nav className="flex items-center gap-9">
           {[
             { name: 'Features', href: '/features' },
-            { name: 'About', href: '#about' },
-            { name: 'Notes', href: '#notes' }
+            { name: 'Dashboard', href: '/dashboard' }
           ].map((link) => (
             <Link
               key={link.name}
@@ -64,7 +63,7 @@ export default function Navbar() {
           ))}
         </nav>
         <div className="flex items-center gap-4">
-          <button className="relative flex size-10 items-center justify-center rounded-full bg-card-bg transition-all duration-300 hover:bg-border hover:scale-110 active:scale-95">
+          <button className="relative flex size-10 items-center justify-center rounded-full bg-card-bg transition-all duration-300 hover:bg-border hover:scale-110 active:scale-95 cursor-pointer">
             <span className="material-symbols-outlined text-xl text-text-muted transition-colors hover:text-[#D4AF37]">notifications</span>
             <span className="absolute top-2 right-2 size-2 rounded-full bg-[#D4AF37] animate-pulse"></span>
           </button>
@@ -77,7 +76,7 @@ export default function Navbar() {
                 <div className="relative size-9">
                   <Image 
                     alt="User Avatar" 
-                    className="rounded-full object-cover ring-2 ring-border transition-all duration-300 group-hover:ring-[#D4AF37] group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-[#D4AF37]/50" 
+                    className="rounded-full object-cover ring-2 ring-border transition-all duration-300 group-hover:ring-[#D4AF37] group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-[#D4AF37]/50 cursor-pointer" 
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjj6oGh9eN7rd_wQp_quC4L2rf0mRTNetgsupoRiIKIeGsDtpy400Gi7M5es4AgrvPMuKsc2B3aSX9PQr6VFRb6dakbsIMRD6MBTDAcGSLW2bzPsq60Doda24O7f_IfYE_enSGdHyivTZHvNxZv97YFAk3FGSJUwO7CoWP5EsXL-BJ5e3NlMXUVsvRU7WDnuyxdpd2NGTIISWXQ8kmiUHgeZEuOziyZSJZ6qan5Sa1F_gll5Zedv9E0vLeozcPNOszPZMe-1B65gA"
                     width={36}
                     height={36}

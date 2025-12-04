@@ -4,7 +4,7 @@ import HeroSection from "./HeroSection";
 import ContentSection from "./ContentSection";
 import FeaturesGrid from "./FeaturesGrid";
 import CTASection from "./CTASection";
-import Footer from "./Footer";
+import Footer from "../shared/Footer";
 import { landingData } from "@/data/landingData";
 
 export default function Landing() {
