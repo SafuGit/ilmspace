@@ -3,7 +3,6 @@ import cloudinary from "./cloudinary";
 export async function uploadFile(
   fileBuffer: Buffer,
   userId: string,
-  filename: string
 ) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,7 +11,6 @@ export async function uploadFile(
         {
           folder: `books/${userId}`,
           resource_type: "raw",
-          public_id: filename,
         },
         (error, result) => {
           if (error) reject(error);

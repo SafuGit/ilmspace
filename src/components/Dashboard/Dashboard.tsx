@@ -1,10 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchBar from './SearchBar';
 import StatCard from './StatCard';
 import BookCard from './BookCard';
 import ContinueReading from './ContinueReading';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/fetcher';
+import { Book } from '../../../prisma-generated';
 
 // Sample data - replace with real data from your database
 const continueReadingBook = {
@@ -22,58 +25,48 @@ const libraryStats = [
   { icon: 'hourglass_top', value: '42h', label: 'Study Time' },
 ];
 
-const allBooks = [
-  {
-    id: 1,
-    title: 'Riyadh as-Salihin',
-    coverUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBrIP8svMBTaeMSK8Nuuz6JAMaiU9sVtfCycXtqludq8I6pcZnkdwP16943tp2bb8GJikCSCz8MuDFjpIlYZHb59UfQrxbqGjGFn989ZM_Vsl_sNEdHZKmDlAxOFfIz21FGkN_LFqiSzq1YVokR374XOtFqg4ubyUxXoY4k92AYJ6SJyEaok0W6lsUXxy4Lvm6sQs22IHhVzf5w2Lp8PttNqxyR2zrkkbehyzOjZY6MmOdwtuHFMBj-oXd7z_ow4CRcZVRZ0XUwEcA',
-    notes: 24,
-    progress: 45,
-    progressColor: 'bg-blue-500',
-  },
-  {
-    id: 2,
-    title: 'Al-Adab al-Mufrad',
-    coverUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDGlsK8rvhf8cI_fGRDZT1DtDsjFx2hHH01YlN-L1bK_lcbyuKmTXsm_P7zWgT4dakzAq30UB4TE2VTjnAZijXz7QI9fRYoNxVyXZpGDHevcae_kE_bJynx11JdcW2CZiHseRXJNmLfHFlFhVLs7xFN1NTDcvuUMrsSxngv8hfdMiyGCtQAFryLZvdyZBuI1IaD-aPi6nUboV1NF0NGxezz3kxupV99NZdIoTsXTuciGzPDcYyIWkhWMkp4sQOuTXgN0eosW6OX7Lk',
-    notes: 78,
-    progress: 100,
-    progressColor: 'bg-green-500',
-  },
-  {
-    id: 3,
-    title: 'Tafsir Ibn Kathir',
-    coverUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAHmg6RiLsfNP9oFrpougzFj_C07VKwOjAS66zedID1zwsN__L5u8cbkGRU7Yd1hPk5K9cVlw8ekgIkx4L9pfTmWwrdWvcERcUanqSQO1EiNBpRAvt55_FsG93DY2VcdS8BpQjlpqN15a8E-i9hmKoWEbsfWdEqkZBk_WlKzAg4W0lRXrEpCOgHp1B6XSrvXN_eh0uFPeNOmW7YIjCQGe8mYlsatG2qlyNNQCtqWEq2s-F3HmC07eIYddCiIUWFoJpVe4lULBmIGtk',
-    notes: 52,
-    progress: 20,
-    progressColor: 'bg-yellow-500',
-  },
-  {
-    id: 4,
-    title: 'The Sealed Nectar',
-    coverUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBOT6OoD9RPeX45ngD0EfBzFFhfwieHdE-HP1ouIyct63aGsMOmJrOWW92WTKoNIng9D1rzxDcjH5DNOFRVZGoLjGNKUD41qzHYxcQsjeVHxb_pIb4VxnnCFGsQwHyPwFlO6XFaFHpJY7pd3MBAt_F5VSFqMg_S8WIx_Uq9x0UtdQ4XS3GnXMfy3TS4E_X8cMRTh1yShHQHO_1ssIpeXYmv_F9ewNbaj9slPEQqTjR5aL5E-uuTnGjrlUJVBXCnQ9AxljowWCEiBvU',
-    notes: 15,
-    progress: 90,
-    progressColor: 'bg-purple-500',
-  },
-];
-
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/user/me')
+      .then(res => res.json())
+      .then(data => {console.log(data); setUserId(data.userId)})
+      .catch(err => console.error('Failed to fetch user ID:', err));
+  }, []);
+
+  const {data: allBooks, error, isLoading} = useSWR(
+    userId ? `/api/books/user/${userId}` : null,
+    fetcher
+  )
 
   const handleResume = () => {
     console.log('Resume reading');
     // Navigate to the book reader page
   };
 
-  const handleBookClick = (bookId: number) => {
+  const handleBookClick = (bookId: string) => {
     console.log('Open book:', bookId);
     // Navigate to the book detail or reader page
   };
 
-  const filteredBooks = allBooks.filter(book =>
+  const filteredBooks = allBooks?.filter((book: Book) =>
     book.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) || [];
+
+  if (error) {
+    return (
+      <main className="flex-1 px-10 py-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="py-12 text-center">
+            <p className="text-red-500">Failed to load books. Please try again.</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="flex-1 px-10 py-8">
@@ -126,23 +119,35 @@ export default function Dashboard() {
         {/* All Books Section */}
         <div className="mt-12">
           <h3 className="mb-4 text-xl font-semibold">All Books</h3>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {filteredBooks.map((book) => (
-              <BookCard
-                key={book.id}
-                title={book.title}
-                coverUrl={book.coverUrl}
-                notes={book.notes}
-                progress={book.progress}
-                progressColor={book.progressColor}
-                onClick={() => handleBookClick(book.id)}
-              />
-            ))}
-          </div>
-          {filteredBooks.length === 0 && (
+          {isLoading ? (
             <div className="py-12 text-center">
-              <p className="text-text-muted">No books found matching &quot;{searchQuery}&quot;</p>
+              <p className="text-text-muted">Loading books...</p>
             </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {filteredBooks.map((book: Book) => (
+                  <BookCard
+                    key={book.id}
+                    title={book.title}
+                    coverUrl={book.thumbnailUrl || ""}
+                    // notes={book.notes}
+                    // progress={book.progress}
+                    // progressColor={book.progressColor}
+                    onClick={() => handleBookClick(book.id)}
+                  />
+                ))}
+              </div>
+              {filteredBooks.length === 0 && !isLoading && (
+                <div className="py-12 text-center">
+                  <p className="text-text-muted">
+                    {searchQuery 
+                      ? `No books found matching "${searchQuery}"` 
+                      : 'No books in your library yet.'}
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
