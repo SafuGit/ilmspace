@@ -20,16 +20,16 @@ export default function FeaturesGrid({
   features,
 }: FeaturesGridProps) {
   return (
-    <div className="flex flex-col gap-10 px-4 py-10">
+    <div className="flex flex-col gap-10 py-16">
       <div className="flex flex-col gap-4">
-        <h1 className="text-white tracking-light text-[32px] font-bold leading-tight md:text-4xl md:font-black md:leading-tight md:tracking-[-0.033em] max-w-[720px]">
+        <h2 className="text-white text-3xl font-bold leading-tight tracking-tight">
           {title}
-        </h1>
-        <p className="text-slate-300 text-base font-normal leading-normal max-w-[720px]">
+        </h2>
+        <p className="text-text-muted text-base font-normal leading-normal">
           {description}
         </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {features.map((feature, index) => (
           <FeatureCard key={index} {...feature} />
         ))}

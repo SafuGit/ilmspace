@@ -12,18 +12,19 @@ export default function FeatureCard({
   description,
 }: FeatureCardProps) {
   return (
-    <div className="flex flex-1 gap-4 rounded-lg border border-[#3b4554] bg-[#1b2027] p-4 flex-col transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:translate-y-[-4px] group">
-      <div className="text-primary transition-transform duration-300 group-hover:scale-110">
-        <span className="material-symbols-outlined text-3xl">{icon}</span>
+    <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card-bg/50 p-6 backdrop-blur-sm transition-all duration-500 hover:border-[#D4AF37]/50 hover:shadow-xl hover:shadow-[#D4AF37]/20 hover:-translate-y-2 hover:bg-card-bg/80 group cursor-pointer animate-[fadeInUp_0.6s_ease-out]">
+      <div className="flex size-12 items-center justify-center rounded-full bg-border text-[#D4AF37] transition-all duration-500 group-hover:scale-125 group-hover:rotate-12 group-hover:bg-[#D4AF37] group-hover:text-background-dark group-hover:shadow-lg group-hover:shadow-[#D4AF37]/50">
+        <span className="material-symbols-outlined text-2xl">{icon}</span>
       </div>
-      <div className="flex flex-col gap-1">
-        <h2 className="text-white text-base font-bold leading-tight">
+      <div className="flex flex-col gap-2">
+        <h3 className="text-white text-lg font-bold leading-tight transition-colors duration-300 group-hover:text-[#D4AF37]">
           {title}
-        </h2>
-        <p className="text-[#9ca8ba] text-sm font-normal leading-normal">
+        </h3>
+        <p className="text-text-muted text-sm font-normal leading-normal transition-colors duration-300 group-hover:text-white">
           {description}
         </p>
       </div>
+      <div className="h-1 w-0 bg-linear-to-r from-[#D4AF37] to-yellow-600 rounded-full transition-all duration-500 group-hover:w-full"></div>
     </div>
   );
 }

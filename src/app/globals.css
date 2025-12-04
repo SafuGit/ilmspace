@@ -3,9 +3,19 @@
 @theme {
   --font-display: var(--font-lexend), sans-serif;
   
-  --color-primary: #0f68e6;
-  --color-background-light: #f6f7f8;
-  --color-background-dark: #101722;
+  /* Yellow/Gold Theme Colors */
+  --color-accent-gold: #D4AF37;
+  --color-serene-teal: #4A6C6F;
+  --color-deep-navy: #1A2E38;
+  --color-light-sand: #F5F1E9;
+  --color-soft-gray: #B0BEC5;
+  
+  /* New Theme Colors */
+  --color-primary: #D4AF37;
+  --color-background-dark: #111318;
+  --color-card-bg: #1f2329;
+  --color-border: #292e38;
+  --color-text-muted: #9da6b8;
 }
 
 @keyframes shimmer {
@@ -17,10 +27,88 @@
   }
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+  }
+}
+
 .material-symbols-outlined {
   font-variation-settings:
   'FILL' 0,
   'wght' 400,
   'GRAD' 0,
   'opsz' 24
+}
+
+.islamic-pattern {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAzMCBMIDMwIDEwIEwgNTAgMzAgTCAzMCA1MCBaIE0gMzAgMzAgbSAtMTAgMCBhIDEwIDEwIDAgMSAwIDIwIDAgYSAxMCAxMCAwIDEgMCAtMjAgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDIxMiwgMTc1LCA1NSwgMC4xKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+');
+  animation: float 6s ease-in-out infinite;
 }

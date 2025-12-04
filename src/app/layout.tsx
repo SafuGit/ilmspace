@@ -26,10 +26,15 @@ export default function RootLayout({
       <body
         className={`${lexend.variable} font-display antialiased bg-background-dark text-white`}
       >
-        <Providers>
-          <Navbar />
-          {children}
-        </Providers>
+        <div className="relative min-h-screen w-full">
+          <div className="absolute inset-0 islamic-pattern opacity-10"></div>
+          <div className="relative z-10">
+            <Providers>
+              <Navbar />
+              {children}
+            </Providers>
+          </div>
+        </div>
       </body>
     </html>
   );

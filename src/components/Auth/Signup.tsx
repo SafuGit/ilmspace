@@ -33,37 +33,45 @@ export default function Signup() {
   };
 
   return (
-    <div className="relative flex h-auto min-h-screen w-full flex-col bg-[#111318] overflow-x-hidden">
-      {/* Background blur effects */}
+    <div className="relative flex h-auto min-h-screen w-full flex-col bg-background-dark overflow-x-hidden">
+      {/* Animated Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-primary/10 blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-[#292e38]/20 blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
+        <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-[#D4AF37]/10 blur-3xl animate-[float_6s_ease-in-out_infinite]"></div>
+        <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-[#D4AF37]/5 blur-3xl animate-[float_8s_ease-in-out_infinite]" style={{ animationDelay: "1s" }}></div>
+        <div className="absolute top-1/2 left-1/2 h-64 w-64 rounded-full bg-[#D4AF37]/5 blur-2xl animate-[float_7s_ease-in-out_infinite]" style={{ animationDelay: "2s" }}></div>
       </div>
 
       <div className="layout-container flex h-full grow flex-col relative z-10">
 
         {/* Main Content */}
         <div className="flex flex-1 items-center justify-center px-4 py-5 sm:px-6 lg:px-8">
-          <div className="relative w-full max-w-lg">
-            {/* Decorative background blurs */}
-            <div className="absolute -top-16 -left-20 h-40 w-40 rounded-full bg-primary/20 blur-2xl"></div>
-            <div className="absolute -bottom-16 -right-20 h-40 w-40 rounded-full bg-[#292e38]/40 blur-2xl"></div>
+          <div className="relative w-full max-w-lg animate-[scaleIn_0.6s_ease-out]">
+            {/* Decorative background blurs with animation */}
+            <div className="absolute -top-16 -left-20 h-40 w-40 rounded-full bg-[#D4AF37]/20 blur-2xl animate-[pulse_3s_ease-in-out_infinite]"></div>
+            <div className="absolute -bottom-16 -right-20 h-40 w-40 rounded-full bg-[#D4AF37]/20 blur-2xl animate-[pulse_3s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }}></div>
 
             {/* Sign up card */}
-            <div className="relative z-10 w-full overflow-hidden rounded-2xl border border-[#292e38] bg-[#111318]/50 backdrop-blur-sm">
-              <div className="flex flex-col items-center gap-6 p-8 sm:p-10">
+            <div className="relative z-10 w-full overflow-hidden rounded-2xl border border-border bg-background-dark/50 backdrop-blur-sm transition-all duration-500 hover:border-[#D4AF37]/30 hover:shadow-2xl hover:shadow-[#D4AF37]/10">
+              <div className="absolute inset-0 bg-linear-to-br from-[#D4AF37]/5 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-700"></div>
+              <div className="flex flex-col items-center gap-6 p-8 sm:p-10 relative z-10">
+                {/* Decorative top accent */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-24 bg-linear-to-r from-transparent via-[#D4AF37] to-transparent animate-[pulse_2s_ease-in-out_infinite]"></div>
+                
                 {/* Header */}
-                <div className="text-center">
+                <div className="text-center animate-[fadeInDown_0.8s_ease-out]">
+                  <div className="inline-flex items-center justify-center size-16 rounded-full bg-border text-[#D4AF37] mb-4 animate-[glow_3s_ease-in-out_infinite]">
+                    <span className="material-symbols-outlined text-3xl">auto_stories</span>
+                  </div>
                   <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                     Login to Ilmspace
                   </h2>
-                  <p className="mt-2 text-base text-[#9da6b8]">
+                  <p className="mt-2 text-base text-text-muted">
                     Join IlmSpace to begin your journey of knowledge.
                   </p>
                 </div>
 
                 {/* Form */}
-                <div className="w-full space-y-4">
+                <div className="w-full space-y-4 animate-[fadeInUp_1s_ease-out]">
                   <form
                     onSubmit={handleMagicLinkSubmit}
                     className="flex flex-col gap-4"
@@ -71,39 +79,46 @@ export default function Signup() {
                     <label className="sr-only" htmlFor="email">
                       Email
                     </label>
-                    <input
-                      className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-[#292e38] bg-[#1f2329] text-white placeholder:text-[#9da6b8] focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 h-14 p-4 text-base font-normal leading-normal transition-all"
-                      id="email"
-                      type="email"
-                      placeholder="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+                    <div className="relative group">
+                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-muted transition-colors group-focus-within:text-[#D4AF37]">mail</span>
+                      <input
+                        className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-border bg-card-bg text-white placeholder:text-text-muted focus:border-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 h-14 pl-12 pr-4 text-base font-normal leading-normal transition-all hover:border-[#D4AF37]/50"
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-4 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[-0.015em] transition-all hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-primary/50 py-2"
+                      className="group relative flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-4 flex-1 bg-[#D4AF37] text-background-dark text-base font-bold leading-normal tracking-[-0.015em] transition-all hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl hover:shadow-[#D4AF37]/50 hover:scale-105 active:scale-95 py-2"
                     >
-                      <span className="truncate">
-                        {isLoading ? "Sending..." : "Send Magic Link"}
+                      <span className="material-symbols-outlined transition-transform group-hover:rotate-12">
+                        {isLoading ? 'hourglass_empty' : 'send'}
                       </span>
+                      <span className="truncate relative z-10">
+                        {isLoading ? "Sending..." : "Send Login Link"}
+                      </span>
+                      <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                     </button>
                   </form>
 
                   {/* Divider */}
                   <div className="flex items-center gap-4">
-                    <hr className="w-full border-t border-[#292e38]" />
-                    <p className="text-sm font-normal leading-normal text-[#9da6b8]">
+                    <hr className="w-full border-t border-border" />
+                    <p className="text-sm font-normal leading-normal text-text-muted">
                       or
                     </p>
-                    <hr className="w-full border-t border-[#292e38]" />
+                    <hr className="w-full border-t border-border" />
                   </div>
 
                   {/* Discord Login */}
                   <button
                     onClick={handleDiscordLogin}
-                    className="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-4 flex-1 bg-[#292e38] text-white gap-2 pl-4 text-base font-bold leading-normal tracking-[-0.015em] transition-all hover:bg-[#343a46] hover:shadow-lg"
+                    className="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-4 flex-1 bg-border text-white gap-2 pl-4 text-base font-bold leading-normal tracking-[-0.015em] transition-all hover:bg-border/80 hover:shadow-lg"
                   >
                     <div className="text-white">
                       <svg
@@ -120,15 +135,15 @@ export default function Signup() {
                   </button>
 
                   {/* Terms */}
-                  <p className="text-xs text-center text-[#9da6b8] mt-4">
+                  <p className="text-xs text-center text-text-muted mt-4">
                     By signing up or logging in, you agree to our{" "}
-                    <Link href="/terms" className="text-primary hover:underline">
+                    <Link href="/terms" className="text-[#D4AF37] hover:underline">
                       Terms of Service
                     </Link>{" "}
                     and{" "}
                     <Link
                       href="/privacy"
-                      className="text-primary hover:underline"
+                      className="text-[#D4AF37] hover:underline"
                     >
                       Privacy Policy
                     </Link>
