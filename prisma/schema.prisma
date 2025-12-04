@@ -23,6 +23,7 @@ model User {
   sessions      Session[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
+  books Book[]
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -81,4 +82,57 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   @@id([userId, credentialID])
+}
+
+model Book {
+  id String @id @default(cuid())
+  userId String
+
+  title String
+  author String?
+  language String?
+  description String?
+  category Categories?
+  
+  fileUrl String
+  secureUrl String
+  publicId String
+
+  fileSize Int // Bytes
+  pageCount Int? 
+  mimeType String @default("application/pdf")
+
+  thumbnailUrl String? // First page
+
+  uploadedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastOpenedAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([id])
+  @@index([title])
+}
+
+enum Categories {
+  Quran
+  Tafsir
+  Hadith
+  Aqeedah
+  Fiqh
+  UsulFiqh
+  Arabic
+  Seerah
+  History
+  Tazkiyah
+  Adab
+  Duas
+  Prophets
+  Biography
+  ComparativeReligion
+  Family
+  Youth
+  Ethics
+  Spirituality
+  Dawah
+  Misc
 }
