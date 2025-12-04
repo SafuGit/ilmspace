@@ -18,29 +18,32 @@ export default function HeroSection({
   heroImage,
 }: HeroSectionProps) {
   return (
-    <div className="py-10">
-      <div className="flex flex-col gap-6 px-4 md:gap-8 lg:flex-row-reverse">
-        <div
-          className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl md:h-auto md:min-w-[400px] lg:w-full"
-          style={{ backgroundImage: `url("${heroImage}")` }}
-        />
-        <div className="flex flex-col gap-6 md:min-w-[400px] md:gap-8 lg:justify-center">
-          <div className="flex flex-col gap-2 text-left">
-            <h1 className="text-white text-4xl font-black leading-tight tracking-[-0.033em] md:text-5xl md:font-black md:leading-tight md:tracking-[-0.033em]">
+    <div className="py-16">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
+        <div className="flex flex-col gap-6 lg:flex-1 animate-[fadeInLeft_0.8s_ease-out]">
+          <div className="flex flex-col gap-4 text-left">
+            <h1 className="text-white text-5xl font-black leading-tight tracking-tight animate-[fadeInUp_0.6s_ease-out]">
               {title}
             </h1>
-            <h2 className="text-slate-300 text-base font-normal leading-normal md:text-lg md:font-normal md:leading-normal">
+            <p className="text-text-muted text-lg font-normal leading-normal animate-[fadeInUp_0.8s_ease-out]">
               {subtitle}
-            </h2>
+            </p>
           </div>
           <Link
             href={'/auth/signup'}
             onClick={ctaAction}
-            className="group relative flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] md:text-base md:font-bold md:leading-normal md:tracking-[0.015em] transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:scale-105 active:scale-95"
+            className="group relative flex h-12 min-w-[84px] max-w-xs cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg bg-[#D4AF37] px-4 text-base font-bold text-background-dark transition-all duration-300 hover:bg-yellow-600 hover:shadow-lg hover:shadow-[#D4AF37]/50 hover:scale-105 active:scale-95 animate-[fadeInUp_1s_ease-out]"
           >
-            <span className="relative z-10 truncate">{ctaText}</span>
-            <div className="absolute inset-0 bg-linear-to-r from-primary via-blue-600 to-primary bg-size-[200%_100%] animate-[shimmer_3s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <span className="material-symbols-outlined transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+            <span className="truncate">{ctaText}</span>
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
           </Link>
+        </div>
+        <div className="lg:flex-1 animate-[fadeInRight_0.8s_ease-out]">
+          <div
+            className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-2xl border border-border shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-[#D4AF37]/20 hover:border-[#D4AF37]/50 cursor-pointer"
+            style={{ backgroundImage: `url("${heroImage}")` }}
+          />
         </div>
       </div>
     </div>

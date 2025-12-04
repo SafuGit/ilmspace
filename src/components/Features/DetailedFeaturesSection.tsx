@@ -19,7 +19,7 @@ export default function DetailedFeaturesSection({
   features,
 }: DetailedFeaturesSectionProps) {
   return (
-    <div className="flex flex-col gap-16 px-4 py-10">
+    <div className="flex flex-col gap-20 py-10">
       {features.map((feature, index) => (
         <DetailedFeature
           key={index}
