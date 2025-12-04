@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 interface HeroSectionProps {
   title: string;
   subtitle: string;
@@ -31,13 +33,14 @@ export default function HeroSection({
               {subtitle}
             </h2>
           </div>
-          <button
+          <Link
+            href={'/auth/signup'}
             onClick={ctaAction}
             className="group relative flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] md:text-base md:font-bold md:leading-normal md:tracking-[0.015em] transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:scale-105 active:scale-95"
           >
             <span className="relative z-10 truncate">{ctaText}</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-primary via-blue-600 to-primary bg-[length:200%_100%] animate-[shimmer_3s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </button>
+            <div className="absolute inset-0 bg-linear-to-r from-primary via-blue-600 to-primary bg-size-[200%_100%] animate-[shimmer_3s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </Link>
         </div>
       </div>
     </div>

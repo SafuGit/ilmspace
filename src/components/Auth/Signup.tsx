@@ -55,7 +55,7 @@ export default function Signup() {
                 {/* Header */}
                 <div className="text-center">
                   <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                    Create your account
+                    Login to Ilmspace
                   </h2>
                   <p className="mt-2 text-base text-[#9da6b8]">
                     Join IlmSpace to begin your journey of knowledge.
@@ -121,7 +121,7 @@ export default function Signup() {
 
                   {/* Terms */}
                   <p className="text-xs text-center text-[#9da6b8] mt-4">
-                    By signing up, you agree to our{" "}
+                    By signing up or logging in, you agree to our{" "}
                     <Link href="/terms" className="text-primary hover:underline">
                       Terms of Service
                     </Link>{" "}
