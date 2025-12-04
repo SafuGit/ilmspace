@@ -4,6 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import Navlink from "./Navlink";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -18,6 +19,15 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const navItems = [
+    { name: 'Features', href: '/features' },
+  ]
+
+  const authNavItems = [
+    ...navItems,
+    { name: 'Dashboard', href: '/dashboard' },
+  ]
 
   return (
     <header className={`sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid px-10 py-4 transition-all duration-300 ${
@@ -42,25 +52,15 @@ export default function Navbar() {
       </Link>
       <div className="flex items-center gap-6">
         <nav className="flex items-center gap-9">
-          {[
-            { name: 'Features', href: '/features' },
-            { name: 'Dashboard', href: '/dashboard' }
-          ].map((link) => (
-            <Link
-              key={link.name}
-              className="relative text-text-muted text-sm font-medium transition-all duration-300 hover:text-white hover:scale-105"
-              href={link.href}
-              onMouseEnter={() => setHoveredLink(link.name)}
-              onMouseLeave={() => setHoveredLink(null)}
-            >
-              {link.name}
-              <span
-                className={`absolute -bottom-1 left-0 h-0.5 bg-[#D4AF37] transition-all duration-300 ${
-                  hoveredLink === link.name ? 'w-full' : 'w-0'
-                }`}
-              />
-            </Link>
-          ))}
+          {status === 'authenticated' ? (
+            authNavItems.map((link) => (
+              <Navlink key={link.name} link={link} hoveredLink={hoveredLink} setHoveredLink={setHoveredLink} />
+            ))
+          ) : (
+            navItems.map((link) => (
+              <Navlink key={link.name} link={link} hoveredLink={hoveredLink} setHoveredLink={setHoveredLink} />
+            ))
+          )}
         </nav>
         <div className="flex items-center gap-4">
           <button className="relative flex size-10 items-center justify-center rounded-full bg-card-bg transition-all duration-300 hover:bg-border hover:scale-110 active:scale-95 cursor-pointer">
