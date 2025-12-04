@@ -33,7 +33,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetch('/api/user/me')
       .then(res => res.json())
-      .then(data => setUserId(data.userId))
+      .then(data => {console.log(data); setUserId(data.userId)})
       .catch(err => console.error('Failed to fetch user ID:', err));
   }, []);
 

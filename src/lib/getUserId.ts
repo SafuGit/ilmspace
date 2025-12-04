@@ -1,19 +1,22 @@
-import { Session } from "next-auth";
 import { prisma } from "./prisma";
 
-export async function getUserId(session: Session) {
-  if (!session?.user?.email) {
-    throw new Error("No email found in session");
+export async function getUserId(email: string) {
+  if (!email) {
+    throw new Error("No email provided");
   }
 
   const user = await prisma.user.findUnique({
     where: {
-      email: session.user.email,
+      email,
     },
     select: {
       id: true,
     },
   });
 
-  return user?.id || null;
+  if (!user) {
+    throw new Error("User not found in database");
+  }
+
+  return user.id;
 }
