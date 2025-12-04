@@ -3,9 +3,9 @@ import Image from 'next/image';
 interface BookCardProps {
   title: string;
   coverUrl: string;
-  notes: number;
-  progress: number;
-  progressColor?: string;
+  notes?: number | undefined;
+  progress?: number | undefined;
+  progressColor?: string | undefined;
   onClick?: () => void;
 }
 
