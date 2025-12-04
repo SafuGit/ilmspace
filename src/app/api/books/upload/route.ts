@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     let uploaded;
     try {
       const bytes = Buffer.from(await file.arrayBuffer());
-      uploaded = await uploadFile(bytes, userId, filename);
+      uploaded = await uploadFile(bytes, userId);
     } catch (uploadError) {
       console.error('❌ Cloudinary upload failed:', uploadError);
       return NextResponse.json(
