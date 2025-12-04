@@ -95,6 +95,7 @@ model Book {
   category Categories?
   
   fileUrl String
+  secureUrl String
   publicId String
 
   fileSize Int // Bytes
