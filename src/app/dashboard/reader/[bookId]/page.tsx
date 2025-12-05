@@ -13,7 +13,7 @@ const PdfViewer = dynamic(() => import('@/components/PDFViewer/PdfViwer'), {
 
 const PdfViewerPage = () => {
   const bookId = useParams().bookId;
-  const { data } = useSWR<{ secureUrl: string; title: string }>(`/api/books/get-url/${bookId}`, fetcher);
+  const { data } = useSWR<{ secureUrl: string; title: string }>(`/api/books/${bookId}`, fetcher);
   
   if (!data) {
     return <div className="flex min-h-screen flex-col items-center justify-center bg-background-dark text-text-muted">Loading PDF URL...</div>;
