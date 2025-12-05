@@ -13,16 +13,15 @@ const PdfViewer = dynamic(() => import('@/components/PDFViewer/PdfViwer'), {
 
 const PdfViewerPage = () => {
   const bookId = useParams().bookId;
-  const { data } = useSWR<{ secureUrl: string }>(`/api/books/get-url/${bookId}`, fetcher);
+  const { data } = useSWR<{ secureUrl: string; title: string }>(`/api/books/get-url/${bookId}`, fetcher);
+  
   if (!data) {
     return <div className="flex min-h-screen flex-col items-center justify-center bg-background-dark text-text-muted">Loading PDF URL...</div>;
-      }
+  }
 
   console.log("PDF URL:", data);
 
-  const fileUrl = data.secureUrl;
-
-  return <PdfViewer fileUrl={fileUrl} />
+  return <PdfViewer fileUrl={data.secureUrl} bookTitle={data.title} />
 };
 
 export default PdfViewerPage;
