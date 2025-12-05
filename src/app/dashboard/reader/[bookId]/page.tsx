@@ -1,8 +1,28 @@
-import PdfViewer from '@/components/PDFViewer/PdfViwer';
-import React from 'react';
+"use client";
+
+import { fetcher } from '@/lib/fetcher';
+import dynamic from 'next/dynamic';
+import { useParams } from 'next/navigation';
+import useSWR from 'swr';
+
+const PdfViewer = dynamic(() => import('@/components/PDFViewer/PdfViwer'), {
+  ssr: false,
+  loading: () => <div className="flex min-h-screen flex-col items-center justify-center bg-background-dark text-text-muted">Loading PDF Viewer...</div>
+});
+
 
 const PdfViewerPage = () => {
-  return <PdfViewer />
+  const bookId = useParams().bookId;
+  const { data } = useSWR<{ secureUrl: string }>(`/api/books/get-url/${bookId}`, fetcher);
+  if (!data) {
+    return <div className="flex min-h-screen flex-col items-center justify-center bg-background-dark text-text-muted">Loading PDF URL...</div>;
+      }
+
+  console.log("PDF URL:", data);
+
+  const fileUrl = data.secureUrl;
+
+  return <PdfViewer fileUrl={fileUrl} />
 };
 
 export default PdfViewerPage;
