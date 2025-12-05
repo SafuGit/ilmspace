@@ -45,14 +45,27 @@ export async function POST(
       return NextResponse.json({ error: "INVALID FILE TYPE" }, { status: 400 });
     }
 
-    if (file.size > 5000000) {
-      return NextResponse.json({ error: "FILE TOO LARGE" }, { status: 413 });
+    if (file.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: "FILE TOO LARGE. MAX 5MB" }, { status: 413 });
     }
 
-    const uploaded = await uploadImageToCloudinary(
-      file,
-      `books/${userId}/${bookId}/thumbnails`
-    );
+    if (file.name.length > 255) {
+      return NextResponse.json({ error: "FILE NAME TOO LONG. MAX 255 CHARACTERS" }, { status: 400 });
+    }
+
+    let uploaded;
+    try {
+      uploaded = await uploadImageToCloudinary(
+        file,
+        `books/${userId}/${bookId}/thumbnails`
+      );
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      return NextResponse.json(
+        { error: "FAILED TO UPLOAD TO CLOUDINARY", log: error },
+        { status: 500 }
+      );
+    }
     const coverUrl = uploaded.secure_url;
 
     try {
