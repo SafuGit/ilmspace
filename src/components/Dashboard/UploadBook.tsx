@@ -32,7 +32,6 @@ export default function UploadBook() {
   const [language, setLanguage] = useState("");
   const [category, setCategory] = useState<Category | "">("");
   const [description, setDescription] = useState("");
-  const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -106,30 +105,64 @@ export default function UploadBook() {
     formData.append("language", language.trim());
     formData.append("category", category);
     if (description) formData.append("description", description.trim());
-    if (thumbnailUrl) formData.append("thumbnailUrl", thumbnailUrl.trim());
 
     try {
-      const response = await fetch("/api/books/upload", {
+      const uploadResponse = await fetch("/api/books/upload", {
         method: "POST",
         body: formData,
       });
 
-      const data = await response.json();
+      const uploadData = await uploadResponse.json();
 
-      if (response.ok) {
-        alert("Book uploaded successfully!");
-        // Reset form
-        setFile(null);
-        setTitle("");
-        setAuthor("");
-        setLanguage("");
-        setCategory("");
-        setDescription("");
-        setThumbnailUrl("");
-        setUploadProgress(0);
-      } else {
-        setError(data.error || "Failed to upload book");
+      if (!uploadResponse.ok) {
+        setError(uploadData.error || "Failed to upload book");
+        return;
       }
+
+      const bookId = uploadData.bookId;
+
+      const thumbnailFormData = new FormData();
+      thumbnailFormData.append("file", file);
+
+      const thumbnailResponse = await fetch("/api/books/generate-thumbnail", {
+        method: "POST",
+        body: thumbnailFormData,
+      });
+
+      if (!thumbnailResponse.ok) {
+        setError("Book uploaded but failed to generate thumbnail");
+        return;
+      }
+e
+      const thumbnailBlob = await thumbnailResponse.blob();
+      const thumbnailFile = new File([thumbnailBlob], "thumbnail.png", {
+        type: "image/png",
+      });
+
+      const uploadThumbnailFormData = new FormData();
+      uploadThumbnailFormData.append("file", thumbnailFile);
+
+      const uploadThumbnailResponse = await fetch(
+        `/api/books/upload-thumbnail/${bookId}`,
+        {
+          method: "POST",
+          body: uploadThumbnailFormData,
+        }
+      );
+
+      if (!uploadThumbnailResponse.ok) {
+        setError("Book uploaded but failed to upload thumbnail");
+        return;
+      }
+
+      alert("Book uploaded successfully with thumbnail!");
+      setFile(null);
+      setTitle("");
+      setAuthor("");
+      setLanguage("");
+      setCategory("");
+      setDescription("");
+      setUploadProgress(0);
     } catch (error) {
       console.error("Error uploading book:", error);
       setError("An error occurred while uploading. Please try again.");
@@ -345,23 +378,6 @@ export default function UploadBook() {
                       rows={3}
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      className="mb-1.5 block text-sm font-medium text-text-secondary"
-                      htmlFor="thumbnailUrl"
-                    >
-                      Thumbnail URL (Optional)
-                    </label>
-                    <input
-                      className="form-input w-full resize-none overflow-hidden rounded-lg border border-border bg-background-light py-2 px-4 text-white placeholder:text-text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/50"
-                      id="thumbnailUrl"
-                      placeholder="https://example.com/cover.jpg"
-                      type="url"
-                      value={thumbnailUrl}
-                      onChange={(e) => setThumbnailUrl(e.target.value)}
                     />
                   </div>
 
