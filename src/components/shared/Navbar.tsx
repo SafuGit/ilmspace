@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Navlink from "./Navlink";
+import { alert } from "@/lib/alert";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -129,7 +130,7 @@ export default function Navbar() {
                 </div>
                 <div className="p-2">
                   <button
-                    onClick={() => signOut({ callbackUrl: "/" })}
+                    onClick={() => signOut({ callbackUrl: "/" }).then(() => alert.success("Signed out successfully."))}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 text-sm font-medium transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 cursor-pointer group"
                   >
                     <span className="material-symbols-outlined text-xl">

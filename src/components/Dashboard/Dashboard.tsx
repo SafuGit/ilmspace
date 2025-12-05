@@ -5,9 +5,10 @@ import SearchBar from './SearchBar';
 import StatCard from './StatCard';
 import BookCard from './BookCard';
 import ContinueReading from './ContinueReading';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { fetcher } from '@/lib/fetcher';
 import { Book } from '../../../prisma-generated';
+import { alert } from '@/lib/alert';
 
 // Sample data - replace with real data from your database
 const continueReadingBook = {
@@ -37,7 +38,7 @@ export default function Dashboard() {
       .catch(err => console.error('Failed to fetch user ID:', err));
   }, []);
 
-  const {data: allBooks, error, isLoading} = useSWR(
+  const {data: allBooks, error, isLoading, mutate: refreshBooks} = useSWR(
     userId ? `/api/books/user/${userId}` : null,
     fetcher
   )
@@ -51,6 +52,25 @@ export default function Dashboard() {
     console.log('Open book:', bookId);
     // Navigate to the book detail or reader page
   };
+
+  const deleteBook = async (bookId: string) => {
+    const isConfirmed = await alert.confirm('Are you sure you want to delete this book?');
+    if (!isConfirmed) return;
+    try {
+      const response = await fetch(`/api/books/delete/${bookId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete book');
+      }
+      if (response.ok) {
+        await refreshBooks();
+        alert.success('Book deleted successfully.');
+      }
+    } catch (error) {
+      console.error('Error deleting book:', error);
+    }
+  }
 
   const filteredBooks = allBooks?.filter((book: Book) =>
     book.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -135,6 +155,7 @@ export default function Dashboard() {
                     // progress={book.progress}
                     // progressColor={book.progressColor}
                     onClick={() => handleBookClick(book.id)}
+                    onDelete={() => deleteBook(book.id)}
                   />
                 ))}
               </div>
