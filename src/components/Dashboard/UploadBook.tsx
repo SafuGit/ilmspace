@@ -119,7 +119,7 @@ export default function UploadBook() {
         return;
       }
 
-      const bookId = uploadData.bookId;
+      const bookId = uploadData.id;
 
       const thumbnailFormData = new FormData();
       thumbnailFormData.append("file", file);
@@ -133,7 +133,7 @@ export default function UploadBook() {
         setError("Book uploaded but failed to generate thumbnail");
         return;
       }
-e
+
       const thumbnailBlob = await thumbnailResponse.blob();
       const thumbnailFile = new File([thumbnailBlob], "thumbnail.png", {
         type: "image/png",

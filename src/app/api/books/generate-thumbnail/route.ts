@@ -1,7 +1,20 @@
 import { serverAuth } from "@/lib/auth";
 import { getUserId } from "@/lib/getUserId";
 import { NextResponse } from "next/server";
+import path from "path";
+import { pathToFileURL } from "url";
 import { pdf } from "pdf-to-img";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+
+const workerPath = path.join(
+  process.cwd(),
+  "node_modules",
+  "pdfjs-dist",
+  "legacy",
+  "build",
+  "pdf.worker.mjs"
+);
+pdfjsLib.GlobalWorkerOptions.workerSrc = pathToFileURL(workerPath).href;
 
 export async function POST(request: Request) {
   try {
@@ -42,16 +55,13 @@ export async function POST(request: Request) {
     console.log("[generate-thumbnail] First page extracted - Size:", firstPage.length);
 
     console.log("[generate-thumbnail] Returning image response");
-    return new NextResponse(
-      new Uint8Array(firstPage),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'image/png',
-          'Content-Disposition': 'inline; filename="thumbnail.png"'
-        }
+    return new Response(new Uint8Array(firstPage).buffer, {
+      status: 200,
+      headers: {
+        'Content-Type': 'image/png',
+        'Content-Length': firstPage.length.toString(),
       }
-    );
+    });
 
   } catch (error) {
     console.error("[generate-thumbnail] ERROR occurred:");
