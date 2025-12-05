@@ -154,6 +154,7 @@ export default function Dashboard() {
                     // notes={book.notes}
                     // progress={book.progress}
                     // progressColor={book.progressColor}
+                    id={book.id}
                     onClick={() => handleBookClick(book.id)}
                     onDelete={() => deleteBook(book.id)}
                   />

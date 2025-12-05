@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Book" ADD COLUMN     "currentPage" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "readingProgress" DOUBLE PRECISION NOT NULL DEFAULT 0.0;

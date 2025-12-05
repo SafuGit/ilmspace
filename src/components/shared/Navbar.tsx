@@ -6,12 +6,15 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Navlink from "./Navlink";
 import { alert } from "@/lib/alert";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const { data: session, status } = useSession();
+  const pathname = usePathname();
+  const isReaderPage = pathname.startsWith("/dashboard/reader/");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +31,8 @@ export default function Navbar() {
     { name: "My Library", href: "/dashboard" },
     { name: "Upload Books", href: "/dashboard/upload-book" },
   ];
+
+  if (isReaderPage) return <div></div>;
 
   return (
     <header

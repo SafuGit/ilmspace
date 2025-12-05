@@ -108,6 +108,9 @@ model Book {
   updatedAt DateTime @updatedAt
   lastOpenedAt DateTime
 
+  currentPage Int @default(0)
+  readingProgress Float @default(0.0)
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([id])
   @@index([title])

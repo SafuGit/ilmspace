@@ -1,6 +1,7 @@
-import Image from "next/image";
+import Link from "next/link";
 
 interface BookCardProps {
+  id: string;
   title: string;
   coverUrl: string;
   notes?: number | undefined;
@@ -11,6 +12,7 @@ interface BookCardProps {
 }
 
 export default function BookCard({
+  id,
   title,
   coverUrl,
   notes,
@@ -67,6 +69,13 @@ export default function BookCard({
           style={{ width: `${progress}%` }}
         ></div>
       </div>
+      <Link
+        href={`/dashboard/reader/${id}`}
+        className="mt-3 rounded-lg bg-accent-gold px-4 py-2 text-sm font-medium text-background-dark opacity-0 transition-all duration-300 hover:bg-accent-gold/90 group-hover:opacity-100"
+        onClick={(e) => e.stopPropagation()}
+      >
+        View Book
+      </Link>
     </div>
   );
 }
