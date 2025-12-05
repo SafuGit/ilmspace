@@ -39,7 +39,8 @@ export default function BookCard({
         </button>
       )}
       {coverUrl != "" ? (
-        <Image
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
           alt={`Book cover of ${title}`}
           className="mb-3 h-56 w-40 rounded-lg object-cover shadow-lg transition-transform duration-300 group-hover:-translate-y-2"
           src={coverUrl}
@@ -47,7 +48,8 @@ export default function BookCard({
           height={224}
         />
       ) : (
-        <Image
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
           alt="placeholder"
           className="mb-3 h-56 w-40 rounded-lg object-cover shadow-lg transition-transform duration-300 group-hover:-translate-y-2"
           src={
