@@ -7,6 +7,7 @@ interface BookCardProps {
   progress?: number | undefined;
   progressColor?: string | undefined;
   onClick?: () => void;
+  onDelete?: () => void;
 }
 
 export default function BookCard({
@@ -16,12 +17,27 @@ export default function BookCard({
   progress,
   progressColor = "bg-blue-500",
   onClick,
+  onDelete,
 }: BookCardProps) {
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete?.();
+  };
+
   return (
     <div
-      className="group flex flex-col items-center text-center cursor-pointer"
+      className="group relative flex flex-col items-center text-center cursor-pointer"
       onClick={onClick}
     >
+      {onDelete && (
+        <button
+          onClick={handleDelete}
+          className="absolute -top-2 -right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-lg transition-all duration-300 hover:bg-red-600 group-hover:opacity-100 cursor-pointer"
+          aria-label="Delete book"
+        >
+          <span className="material-symbols-outlined text-lg">delete</span>
+        </button>
+      )}
       {coverUrl != "" ? (
         <Image
           alt={`Book cover of ${title}`}
@@ -43,7 +59,7 @@ export default function BookCard({
       )}
       <h4 className="font-semibold">{title}</h4>
       <p className="text-xs text-text-muted">{notes} Notes</p>
-      <div className="mt-2 h-1 w-full max-w-[160px] rounded-full bg-border">
+      <div className="mt-2 h-1 w-full max-w-40 rounded-full bg-border">
         <div
           className={`h-1 rounded-full ${progressColor}`}
           style={{ width: `${progress}%` }}
