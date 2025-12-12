@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 
 interface Playlist {
   id: string;
@@ -43,6 +44,8 @@ const featuredPlaylists: Playlist[] = [
 ];
 
 export default function PlaylistsSection() {
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+
   return (
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-4">
@@ -63,10 +66,13 @@ export default function PlaylistsSection() {
               <span className="material-symbols-outlined">video_library</span>
               Browse Playlists
             </Link>
-            <button className="inline-flex items-center gap-2 px-6 py-3 border-2 border-accent-gold text-accent-gold rounded-lg font-semibold hover:bg-accent-gold hover:text-background-dark transition-colors">
+            <Link
+              href="/dashboard/upload-playlist"
+              className="inline-flex items-center gap-2 px-6 py-3 border-2 border-accent-gold text-accent-gold rounded-lg font-semibold hover:bg-accent-gold hover:text-background-dark transition-colors"
+            >
               <span className="material-symbols-outlined">add</span>
               Add from YouTube
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -128,7 +134,7 @@ export default function PlaylistsSection() {
         </div>
 
         {/* Add Your Own Section */}
-        <div className="bg-gradient-to-r from-serene-teal to-serene-teal/80 rounded-2xl p-8 text-white">
+        <div className="bg-linear-to-r from-serene-teal to-serene-teal/80 rounded-2xl p-8 text-white">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="text-2xl font-bold mb-3">Add Your Favorite Playlists</h3>
@@ -161,12 +167,17 @@ export default function PlaylistsSection() {
                 <input 
                   type="text"
                   placeholder="Paste YouTube playlist URL..."
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
                   className="w-full px-4 py-2.5 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-accent-gold"
                 />
-                <button className="w-full px-4 py-2.5 bg-accent-gold text-background-dark rounded-lg font-bold hover:bg-[#bfa030] transition-colors flex items-center justify-center gap-2">
+                <Link
+                  href={youtubeUrl ? `/dashboard/upload-playlist?url=${encodeURIComponent(youtubeUrl)}` : "/dashboard/upload-playlist"}
+                  className="w-full px-4 py-2.5 bg-accent-gold text-background-dark rounded-lg font-bold hover:bg-[#bfa030] transition-colors flex items-center justify-center gap-2"
+                >
                   <span className="material-symbols-outlined">add</span>
                   Add Playlist
-                </button>
+                </Link>
               </div>
               <p className="text-xs text-white/70 mt-3 text-center">
                 Supported: YouTube, Vimeo, Direct Video Links

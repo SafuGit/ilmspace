@@ -16,6 +16,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const isReaderPage = pathname.startsWith("/dashboard/reader/");
   const isDarsPage = pathname.startsWith("/dashboard/dars/");
+  const isUploadPage = pathname.startsWith("/dashboard/upload-playlist");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +34,7 @@ export default function Navbar() {
     { name: "Upload Books", href: "/dashboard/upload-book" },
   ];
 
-  if (isReaderPage || isDarsPage) return <div></div>;
+  if (isReaderPage || isDarsPage || isUploadPage) return <div></div>;
 
   return (
     <header
