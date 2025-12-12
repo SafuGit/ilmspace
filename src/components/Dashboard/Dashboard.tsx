@@ -5,10 +5,11 @@ import SearchBar from './SearchBar';
 import StatCard from './StatCard';
 import BookCard from './BookCard';
 import ContinueReading from './ContinueReading';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { fetcher } from '@/lib/fetcher';
 import { Book } from '../../../prisma-generated';
 import { alert } from '@/lib/alert';
+import PlaylistsSection from './PlaylistsSection';
 
 // Sample data - replace with real data from your database
 const continueReadingBook = {
@@ -135,6 +136,8 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+
+        <PlaylistsSection />
 
         {/* All Books Section */}
         <div className="mt-12">

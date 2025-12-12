@@ -15,6 +15,7 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const isReaderPage = pathname.startsWith("/dashboard/reader/");
+  const isDarsPage = pathname.startsWith("/dashboard/dars/");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +33,7 @@ export default function Navbar() {
     { name: "Upload Books", href: "/dashboard/upload-book" },
   ];
 
-  if (isReaderPage) return <div></div>;
+  if (isReaderPage || isDarsPage) return <div></div>;
 
   return (
     <header

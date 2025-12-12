@@ -1,0 +1,186 @@
+"use client";
+
+import Link from "next/link";
+
+interface Playlist {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  episodeCount: number;
+  category: string;
+  instructor: string;
+}
+
+const featuredPlaylists: Playlist[] = [
+  {
+    id: "1",
+    title: "Al-Usool ath-Thalathah",
+    description: "A comprehensive study of the Three Fundamental Principles with detailed explanations and evidences.",
+    thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuBDYS9YWACNyIwEvRxkZ-Eo-9Jx7s3QO1UVeXxosLZKc79sjLLLABmzxN1d2dn9czy9pSa1-T1vf1Zu-5g86onG5y-rqimOI_TwaTnV2dFU4RkIGYKM4eeO7-wUiTjRPyMSsEGv3lFLccxsiOFMXdy9dMaFCVRKXSxfFHUfZWVHZUecYSH8lpkdZxZfZ0Hpi2gBNxSfNVLNsbTbFhxz1blGFu7u2GY3DOQEYlP8nnizY8Mn-HevLOBkx4ukAkn4hufD33np02OF7Fk",
+    episodeCount: 12,
+    category: "Aqeedah",
+    instructor: "Sheikh Ibn Baz"
+  },
+  {
+    id: "2",
+    title: "Tafsir Surah Al-Baqarah",
+    description: "In-depth explanation of the longest surah in the Quran with linguistic and contextual analysis.",
+    thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuBDYS9YWACNyIwEvRxkZ-Eo-9Jx7s3QO1UVeXxosLZKc79sjLLLABmzxN1d2dn9czy9pSa1-T1vf1Zu-5g86onG5y-rqimOI_TwaTnV2dFU4RkIGYKM4eeO7-wUiTjRPyMSsEGv3lFLccxsiOFMXdy9dMaFCVRKXSxfFHUfZWVHZUecYSH8lpkdZxZfZ0Hpi2gBNxSfNVLNsbTbFhxz1blGFu7u2GY3DOQEYlP8nnizY8Mn-HevLOBkx4ukAkn4hufD33np02OF7Fk",
+    episodeCount: 45,
+    category: "Tafsir",
+    instructor: "Dr. Yasir Qadhi"
+  },
+  {
+    id: "3",
+    title: "Fiqh of Worship",
+    description: "Essential rulings on prayer, fasting, and other acts of worship according to authentic sources.",
+    thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuBDYS9YWACNyIwEvRxkZ-Eo-9Jx7s3QO1UVeXxosLZKc79sjLLLABmzxN1d2dn9czy9pSa1-T1vf1Zu-5g86onG5y-rqimOI_TwaTnV2dFU4RkIGYKM4eeO7-wUiTjRPyMSsEGv3lFLccxsiOFMXdy9dMaFCVRKXSxfFHUfZWVHZUecYSH8lpkdZxZfZ0Hpi2gBNxSfNVLNsbTbFhxz1blGFu7u2GY3DOQEYlP8nnizY8Mn-HevLOBkx4ukAkn4hufD33np02OF7Fk",
+    episodeCount: 24,
+    category: "Fiqh",
+    instructor: "Sheikh Assim al-Hakeem"
+  }
+];
+
+export default function PlaylistsSection() {
+  return (
+    <section className="py-20">
+      <div className="mx-auto max-w-7xl px-4">
+        {/* Section Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Video Playlists & Dars
+          </h2>
+          <p className="text-lg text-text-muted max-w-3xl mx-auto mb-6">
+            Access curated Islamic lectures and courses from renowned scholars. 
+            Take notes in real-time, track your progress, and deepen your knowledge.
+          </p>
+          <div className="flex justify-center gap-4">
+            <Link 
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent-gold text-background-dark rounded-lg font-semibold hover:bg-[#bfa030] transition-colors"
+            >
+              <span className="material-symbols-outlined">video_library</span>
+              Browse Playlists
+            </Link>
+            <button className="inline-flex items-center gap-2 px-6 py-3 border-2 border-accent-gold text-accent-gold rounded-lg font-semibold hover:bg-accent-gold hover:text-background-dark transition-colors">
+              <span className="material-symbols-outlined">add</span>
+              Add from YouTube
+            </button>
+          </div>
+        </div>
+
+        {/* Featured Playlists Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {featuredPlaylists.map((playlist) => (
+            <div 
+              key={playlist.id}
+              className="bg-card-bg rounded-xl overflow-hidden shadow-lg hover:shadow-xl hover:shadow-accent-gold/10 transition-all duration-300 border border-border group"
+            >
+              {/* Thumbnail */}
+              <div className="relative aspect-video bg-background-dark overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={playlist.thumbnail}
+                  alt={playlist.title}
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
+                <div className="absolute bottom-3 right-3 bg-black/80 backdrop-blur-sm px-2 py-1 rounded text-white text-xs font-mono">
+                  {playlist.episodeCount} episodes
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="h-16 w-16 rounded-full bg-accent-gold/90 flex items-center justify-center pl-1 shadow-lg">
+                    <span className="material-symbols-outlined text-4xl text-background-dark">play_arrow</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-2 py-0.5 bg-accent-gold/20 text-accent-gold text-xs font-bold rounded">
+                    {playlist.category}
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-accent-gold transition-colors">
+                  {playlist.title}
+                </h3>
+                <p className="text-sm text-text-muted mb-4 line-clamp-2">
+                  {playlist.description}
+                </p>
+                <div className="flex items-center justify-between pt-3 border-t border-border">
+                  <div className="flex items-center gap-2 text-xs text-text-muted">
+                    <span className="material-symbols-outlined text-base">person</span>
+                    {playlist.instructor}
+                  </div>
+                  <Link 
+                    href={`/dashboard/dars/${playlist.id}`}
+                    className="text-sm font-semibold text-accent-gold hover:text-[#bfa030] flex items-center gap-1"
+                  >
+                    Start Learning
+                    <span className="material-symbols-outlined text-base">arrow_forward</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Add Your Own Section */}
+        <div className="bg-gradient-to-r from-serene-teal to-serene-teal/80 rounded-2xl p-8 text-white">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 className="text-2xl font-bold mb-3">Add Your Favorite Playlists</h3>
+              <p className="text-white/90 mb-4">
+                Import video playlists from YouTube, Vimeo, or other platforms. 
+                IlmSpace will help you organize your Islamic learning journey with synchronized note-taking and progress tracking.
+              </p>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-accent-gold">check_circle</span>
+                  Auto-sync with YouTube playlists
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-accent-gold">check_circle</span>
+                  Time-stamped note taking
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-accent-gold">check_circle</span>
+                  Progress tracking across devices
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-accent-gold">check_circle</span>
+                  Download notes and transcripts
+                </li>
+              </ul>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <h4 className="font-semibold mb-3">Quick Add Playlist</h4>
+              <div className="space-y-3">
+                <input 
+                  type="text"
+                  placeholder="Paste YouTube playlist URL..."
+                  className="w-full px-4 py-2.5 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-accent-gold"
+                />
+                <button className="w-full px-4 py-2.5 bg-accent-gold text-background-dark rounded-lg font-bold hover:bg-[#bfa030] transition-colors flex items-center justify-center gap-2">
+                  <span className="material-symbols-outlined">add</span>
+                  Add Playlist
+                </button>
+              </div>
+              <p className="text-xs text-white/70 mt-3 text-center">
+                Supported: YouTube, Vimeo, Direct Video Links
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+      `}</style>
+    </section>
+  );
+}
