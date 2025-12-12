@@ -116,6 +116,36 @@ model Book {
   @@index([title])
 }
 
+model Playlist {
+  id String @id @default(cuid())
+  userId String
+  name String
+  description String?
+  playlistUrl String
+  books Book[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Note {
+  id String @id @default(cuid())
+  noteType NoteTypes
+  userId String
+  bookId String?
+  playlistId String?
+  content String
+  pageNumber Int?
+  timestamp String?
+}
+
+enum NoteTypes {
+  dars
+  book
+}
+
 enum Categories {
   Quran
   Tafsir
