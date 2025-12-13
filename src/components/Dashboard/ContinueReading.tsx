@@ -23,6 +23,7 @@ export default function ContinueReading({ book, onResume }: ContinueReadingProps
             src={book.coverUrl}
             width={112}
             height={160}
+            suppressHydrationWarning
           />
           <div className="flex-1">
             <h4 className="text-2xl font-bold">{book.title}</h4>
