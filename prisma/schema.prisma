@@ -125,6 +125,8 @@ model Playlist {
   name String
   description String?
   playlistUrl String
+  thumbnailUrl String?
+  numberOfEpisodes Int?
   books Book[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
