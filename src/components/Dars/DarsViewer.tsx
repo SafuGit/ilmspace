@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 
 interface DarsViewerProps {
@@ -47,6 +47,20 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
   const [currentTime] = useState(765); // 12:45
   const [duration] = useState(2700); // 45:00
   const [showControls, setShowControls] = useState(false);
+  const [isSynced, setIsSynced] = useState(true);
+
+  useEffect(() => {
+    const checkIfSynced = async () => {
+      try {
+        const response = await fetch(`/api/playlists/check-if-synced/${playlistId}`);
+        const data = await response.json();
+        setIsSynced(data.isSynced);
+      } catch (error) {
+        console.error("Failed to check if playlist is synced:", error);
+      }
+    }
+    checkIfSynced();
+  }, [playlistId]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
