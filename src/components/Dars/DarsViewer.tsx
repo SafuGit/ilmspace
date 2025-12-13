@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 
 interface DarsViewerProps {
-  videoId: string;
+  playlistId: string;
 }
 
 interface Note {
@@ -38,8 +38,8 @@ const getInitialNotes = (): Note[] => {
   ];
 };
 
-export default function DarsViewer({ videoId }: DarsViewerProps) {
-  // TODO: Use videoId to fetch video data from API
+export default function DarsViewer({ playlistId }: DarsViewerProps) {
+  // TODO: Use playlistId to fetch playlist data from API
   const [activeTab, setActiveTab] = useState<"notes" | "playlist">("notes");
   const [notes, setNotes] = useState<Note[]>(() => getInitialNotes());
   const [currentNote, setCurrentNote] = useState("");

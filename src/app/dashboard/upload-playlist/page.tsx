@@ -368,6 +368,7 @@ export default function UploadPlaylistPage() {
                                 <span className="text-sm text-gray-400">Loading...</span>
                               </div>
                             ) : formData.thumbnailUrl ? (
+                              // eslint-disable-next-line @next/next/no-img-element
                               <img
                                 src={formData.thumbnailUrl}
                                 alt="Playlist thumbnail"

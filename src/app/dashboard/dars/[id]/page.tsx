@@ -9,7 +9,7 @@ export default function DarsPage() {
 
   return (
     <div className="min-h-screen bg-background-dark">
-      <DarsViewer videoId={id} />
+      <DarsViewer playlistId={id} />
     </div>
   );
 }
