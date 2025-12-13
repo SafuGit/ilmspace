@@ -16,6 +16,7 @@ export async function GET(
       where: { userId },
       include: {
         books: true,
+        videos: true,
       }
     });
     return NextResponse.json(playlists, {status: 200});

@@ -9,7 +9,8 @@ import useSWR from 'swr';
 import { fetcher } from '@/lib/fetcher';
 import { Book } from '../../../prisma-generated';
 import { alert } from '@/lib/alert';
-import PlaylistsSection from './PlaylistsSection';
+import PlaylistsSection, { Playlist } from './PlaylistsSection';
+import Loading from '../shared/Loading';
 
 // Sample data - replace with real data from your database
 const continueReadingBook = {
@@ -43,6 +44,11 @@ export default function Dashboard() {
     userId ? `/api/books/user/${userId}` : null,
     fetcher
   )
+
+  const { data: playlists, mutate: mutatePlaylists, isLoading: isPlaylistLoading } = useSWR<Playlist[]>(
+    userId ? `/api/playlists/user/${userId}` : null,
+    fetcher
+  );
 
   const handleResume = () => {
     console.log('Resume reading');
@@ -88,6 +94,8 @@ export default function Dashboard() {
       </main>
     );
   }
+
+  if (isLoading || isPlaylistLoading) return <Loading />
 
   return (
     <main className="flex-1 px-10 py-8">
@@ -137,7 +145,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <PlaylistsSection />
+        <PlaylistsSection playlists={playlists ?? []} mutatePlaylists={mutatePlaylists} />
 
         {/* All Books Section */}
         <div className="mt-12">

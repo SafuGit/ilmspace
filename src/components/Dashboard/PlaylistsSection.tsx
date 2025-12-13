@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
-interface Playlist {
+export interface Playlist {
   id: string;
   name: string;
   description: string;
@@ -15,24 +15,8 @@ interface Playlist {
   books: object[];
 }
 
-export default function PlaylistsSection() {
+export default function PlaylistsSection({ playlists, mutatePlaylists }: { playlists: Playlist[], mutatePlaylists: () => void }) {
   const [youtubeUrl, setYoutubeUrl] = useState("");
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch("/api/user/me")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setUserId(data.userId);
-      })
-      .catch((err) => console.error("Failed to fetch user ID:", err));
-  }, []);
-
-  const { data: playlists, mutate: mutatePlaylists } = useSWR(
-    userId ? `/api/playlists/user/${userId}` : null,
-    fetcher
-  );
 
   return (
     <section className="py-20">
