@@ -15,6 +15,8 @@ interface UploadPlaylistFormData {
   description: string;
   playlistUrl: string;
   books: object[];
+  thumbnailUrl?: string;
+  numberOfEpisodes?: number;
 }
 
 export default function UploadPlaylistPage() {
@@ -47,10 +49,79 @@ export default function UploadPlaylistPage() {
     description: "",
     playlistUrl: urlParam ? decodeURIComponent(urlParam) : "",
     books: [],
+    thumbnailUrl: undefined,
+    numberOfEpisodes: undefined,
   });
+
+  const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const extractPlaylistId = (url: string): string | null => {
+    try {
+      const urlObj = new URL(url);
+      const listParam = urlObj.searchParams.get('list');
+      return listParam;
+    } catch {
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      const playlistId = extractPlaylistId(formData.playlistUrl);
+      
+      if (!playlistId) {
+        setFormData(prev => ({
+          ...prev,
+          thumbnailUrl: undefined,
+          numberOfEpisodes: undefined,
+        }));
+        return;
+      }
+
+      setIsLoadingMetadata(true);
+      try {
+        const response = await fetch(`/api/playlists/get-metadata/${playlistId}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          setFormData(prev => ({
+            ...prev,
+            thumbnailUrl: data.thumbnailUrl,
+            numberOfEpisodes: data.amountOfVideos,
+          }));
+        } else {
+          console.error('Failed to fetch metadata:', data.error);
+          alert.error(data.error || 'Failed to fetch playlist information');
+          setFormData(prev => ({
+            ...prev,
+            thumbnailUrl: undefined,
+            numberOfEpisodes: undefined,
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching metadata:', error);
+        alert.error('Failed to fetch playlist information');
+        setFormData(prev => ({
+          ...prev,
+          thumbnailUrl: undefined,
+          numberOfEpisodes: undefined,
+        }));
+      } finally {
+        setIsLoadingMetadata(false);
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      if (formData.playlistUrl) {
+        fetchMetadata();
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.playlistUrl]);
 
   // Fuse.js setup for fuzzy search
   const fuse = useMemo(() => {
@@ -95,6 +166,8 @@ export default function UploadPlaylistPage() {
           description: "",
           playlistUrl: "",
           books: [],
+          thumbnailUrl: undefined,
+          numberOfEpisodes: undefined,
         });
         setSearchQuery("");
         setIsSearchOpen(false);
@@ -252,6 +325,61 @@ export default function UploadPlaylistPage() {
                         Must be a valid YouTube playlist URL.
                       </p>
                     </div>
+
+                    {/* Playlist Metadata - Read Only */}
+                    {(isLoadingMetadata || formData.thumbnailUrl || formData.numberOfEpisodes !== undefined) && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Number of Episodes */}
+                        <div className="group">
+                          <label
+                            className="block text-sm font-medium text-gray-300 mb-2"
+                            htmlFor="number-of-episodes"
+                          >
+                            Number of Episodes
+                          </label>
+                          <div className="relative rounded-lg bg-background-dark border border-border opacity-75">
+                            {isLoadingMetadata ? (
+                              <div className="flex items-center gap-2 px-4 py-3">
+                                <div className="animate-spin h-4 w-4 border-2 border-accent-gold border-t-transparent rounded-full"></div>
+                                <span className="text-sm text-gray-400">Loading...</span>
+                              </div>
+                            ) : (
+                              <input
+                                className="w-full bg-transparent border-none rounded-lg px-4 py-3 text-gray-400 sm:text-sm cursor-not-allowed"
+                                id="number-of-episodes"
+                                type="text"
+                                value={formData.numberOfEpisodes ?? 'N/A'}
+                                readOnly
+                                disabled
+                              />
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Thumbnail Preview */}
+                        <div className="group">
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Playlist Thumbnail
+                          </label>
+                          <div className="relative rounded-lg bg-background-dark border border-border overflow-hidden h-[52px] flex items-center justify-center">
+                            {isLoadingMetadata ? (
+                              <div className="flex items-center gap-2">
+                                <div className="animate-spin h-4 w-4 border-2 border-accent-gold border-t-transparent rounded-full"></div>
+                                <span className="text-sm text-gray-400">Loading...</span>
+                              </div>
+                            ) : formData.thumbnailUrl ? (
+                              <img
+                                src={formData.thumbnailUrl}
+                                alt="Playlist thumbnail"
+                                className="h-full w-auto object-contain"
+                              />
+                            ) : (
+                              <span className="text-sm text-gray-500">No thumbnail</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Description */}
                     <div className="group">

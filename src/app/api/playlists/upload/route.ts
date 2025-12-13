@@ -101,6 +101,8 @@ export async function POST(req: Request) {
           description: body.description?.trim() || null,
           playlistUrl: body.playlistUrl,
           userId: user.id,
+          numberOfEpisodes: body.numberOfEpisodes || 0,
+          thumbnailUrl: body.thumbnailUrl || null,
           // Add book connections if provided
           books: body.books?.length > 0 ? {
             connect: body.books.map((book: any) => ({ id: book.id }))
