@@ -11,6 +11,9 @@ export async function GET(
 
     const playlist = await prisma.playlist.findUnique({
       where: { id: playlistId },
+      include: {
+        videos: true,
+      }
     })
 
     if (!playlist) {
@@ -38,7 +41,7 @@ export async function GET(
       );
     }
 
-    const isSynced = playlist.numberOfEpisodes === videoCount;
+    const isSynced = playlist.videos.length === videoCount;
 
     return NextResponse.json(
       { isSynced },
