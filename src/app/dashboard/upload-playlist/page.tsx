@@ -8,6 +8,7 @@ import { useEffect, useState, useMemo } from "react";
 import useSWR from "swr";
 import { Command } from "cmdk";
 import Fuse from "fuse.js";
+import { alert } from "@/lib/alert";
 
 interface UploadPlaylistFormData {
   name: string;
@@ -75,8 +76,33 @@ export default function UploadPlaylistPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Handle playlist submission
     console.log(formData);
+    try {
+      fetch("/api/playlists/upload", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to upload playlist");
+        }
+        alert.success("Playlist uploaded successfully!");
+        setFormData({
+          name: "",
+          description: "",
+          playlistUrl: "",
+          books: [],
+        });
+        setSearchQuery("");
+        setIsSearchOpen(false);
+      });
+    } catch (error: any) {
+      console.error("Error uploading playlist:", error);
+      alert.error(error.message || "An unexpected error occurred");
+    }
   };
 
   const updateFormData = (
