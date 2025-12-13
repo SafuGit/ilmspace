@@ -1,8 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { fetcher } from "@/lib/fetcher";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import useSWR from "swr";
+import { Command } from "cmdk";
+import Fuse from "fuse.js";
 
 interface UploadPlaylistFormData {
   name: string;
@@ -14,6 +19,27 @@ interface UploadPlaylistFormData {
 export default function UploadPlaylistPage() {
   const searchParams = useSearchParams();
   const urlParam = searchParams.get("url");
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/user/me")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setUserId(data.userId);
+      })
+      .catch((err) => console.error("Failed to fetch user ID:", err));
+  }, []);
+
+  const { data: userBooks, mutate: mutateUserBooks } = useSWR(
+    userId ? `/api/books/user/${userId}` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000,
+    }
+  );
 
   const [formData, setFormData] = useState<UploadPlaylistFormData>({
     name: "",
@@ -21,6 +47,31 @@ export default function UploadPlaylistPage() {
     playlistUrl: urlParam ? decodeURIComponent(urlParam) : "",
     books: [],
   });
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Fuse.js setup for fuzzy search
+  const fuse = useMemo(() => {
+    if (!userBooks) return null;
+    return new Fuse(userBooks, {
+      keys: ["title", "author"],
+      threshold: 0.3,
+      includeScore: true,
+    });
+  }, [userBooks]);
+
+  // Search results with fuzzy matching
+  const searchResults = useMemo(() => {
+    if (!fuse || !searchQuery.trim()) return userBooks || [];
+    return fuse.search(searchQuery).map((result) => result.item);
+  }, [fuse, searchQuery, userBooks]);
+
+  // Selected book IDs for duplicate check
+  const selectedBookIds = useMemo(
+    () => new Set(formData.books.map((b: any) => b.id)),
+    [formData.books]
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,10 +86,19 @@ export default function UploadPlaylistPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const addBook = (book: any) => {
+    if (selectedBookIds.has(book.id)) return;
+    setFormData((prev) => ({
+      ...prev,
+      books: [...prev.books, book],
+    }));
+    setSearchQuery("");
+    setIsSearchOpen(false);
+  };
+
   const removeBook = (bookId: string) => {
     setFormData((prev) => ({
       ...prev,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       books: prev.books.filter((b: any) => b.id !== bookId),
     }));
   };
@@ -200,7 +260,6 @@ export default function UploadPlaylistPage() {
                       <div className="bg-background-dark border border-border rounded-lg p-4 transition-all hover:border-gray-600">
                         <div className="flex flex-wrap gap-2 mb-3">
                           {
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             formData.books.map((book: any) => (
                               <span
                                 key={book.id}
@@ -223,19 +282,67 @@ export default function UploadPlaylistPage() {
                             ))
                           }
                         </div>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
-                            <span className="material-symbols-outlined text-gray-500">
-                              search
+                        <Command
+                          className="relative"
+                          shouldFilter={false}
+                          onKeyDown={(e) => {
+                            if (e.key === "Escape") setIsSearchOpen(false);
+                          }}
+                        >
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none z-10">
+                              <span className="material-symbols-outlined text-gray-500">
+                                search
+                              </span>
                             </span>
-                          </span>
-                          <input
-                            className="w-full bg-transparent border-b border-border focus:border-accent-gold focus:ring-0 text-sm text-white pl-9 pb-2 placeholder-gray-600 transition-colors"
-                            placeholder="Search books in your library..."
-                            type="text"
-                          />
-                          {/* Dropdown would go here */}
-                        </div>
+                            <Command.Input
+                              value={searchQuery}
+                              onValueChange={setSearchQuery}
+                              onFocus={() => setIsSearchOpen(true)}
+                              placeholder="Search books in your library..."
+                              className="w-full bg-transparent border-b border-border focus:border-accent-gold focus:ring-0 text-sm text-white pl-9 pb-2 placeholder-gray-600 transition-colors outline-none"
+                            />
+                          </div>
+
+                          {isSearchOpen && searchResults.length > 0 && (
+                            <Command.List className="absolute z-50 w-full mt-2 bg-card-bg border border-border rounded-lg shadow-xl max-h-60 overflow-y-auto custom-scrollbar">
+                              {searchResults.map((book: any) => {
+                                const isSelected = selectedBookIds.has(book.id);
+                                return (
+                                  <Command.Item
+                                    key={book.id}
+                                    value={book.id}
+                                    onSelect={() => addBook(book)}
+                                    disabled={isSelected}
+                                    className={`px-4 py-3 cursor-pointer hover:bg-border transition-colors flex items-center gap-3 data-[selected=true]:bg-border ${
+                                      isSelected ? "opacity-50" : ""
+                                    }`}
+                                  >
+                                    <span className="material-symbols-outlined text-accent-gold text-base">
+                                      {isSelected ? "check_circle" : "menu_book"}
+                                    </span>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm font-medium text-white truncate">
+                                        {book.title}
+                                      </p>
+                                      {book.author && (
+                                        <p className="text-xs text-text-muted truncate">
+                                          {book.author}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Command.Item>
+                                );
+                              })}
+                            </Command.List>
+                          )}
+
+                          {isSearchOpen && searchQuery && searchResults.length === 0 && (
+                            <div className="absolute z-50 w-full mt-2 bg-card-bg border border-border rounded-lg shadow-xl p-4 text-center text-text-muted text-sm">
+                              No books found
+                            </div>
+                          )}
+                        </Command>
                         <p className="mt-2 text-xs text-[#5f6368]">
                           Linking a book allows you to open it side-by-side
                           while watching lectures.
@@ -332,7 +439,7 @@ export default function UploadPlaylistPage() {
         </div>
       </main>
 
-      <style jsx>{`
+      <style jsx global>{`
         .material-symbols-outlined {
           font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
         }
@@ -351,6 +458,28 @@ export default function UploadPlaylistPage() {
         }
         .islamic-pattern {
           background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBDYS9YWACNyIwEvRxkZ-Eo-9Jx7s3QO1UVeXxosLZKc79sjLLLABmzxN1d2dn9czy9pSa1-T1vf1Zu-5g86onG5y-rqimOI_TwaTnV2dFU4RkIGYKM4eeO7-wUiTjRPyMSsEGv3lFLccxsiOFMXdy9dMaFCVRKXSxfFHUfZWVHZUecYSH8lpkdZxZfZ0Hpi2gBNxSfNVLNsbTbFhxz1blGFu7u2GY3DOQEYlP8nnizY8Mn-HevLOBkx4ukAkn4hufD33np02OF7Fk);
+        }
+        
+        /* cmdk custom styles */
+        [cmdk-root] {
+          position: relative;
+        }
+        [cmdk-input] {
+          outline: none;
+        }
+        [cmdk-list] {
+          scrollbar-width: thin;
+        }
+        [cmdk-item] {
+          cursor: pointer;
+          outline: none;
+        }
+        [cmdk-item][aria-selected="true"] {
+          background: #1a1d24;
+        }
+        [cmdk-item][aria-disabled="true"] {
+          cursor: not-allowed;
+          opacity: 0.5;
         }
       `}</style>
     </div>
