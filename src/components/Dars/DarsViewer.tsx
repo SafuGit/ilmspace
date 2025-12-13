@@ -62,6 +62,12 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
     checkIfSynced();
   }, [playlistId]);
 
+  useEffect(() => {
+    if (!isSynced) {
+      
+    }
+  }, [isSynced]);
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -427,37 +433,6 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
           </div>
         </aside>
       </main>
-
-      <style jsx global>{`
-        :root {
-          --serene-teal: #4A6C6F;
-          --deep-navy: #1A2E38;
-          --light-sand: #F5F1E9;
-          --accent-gold: #D4AF37;
-          --soft-gray: #B0BEC5;
-        }
-        
-        .islamic-pattern {
-          background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBDYS9YWACNyIwEvRxkZ-Eo-9Jx7s3QO1UVeXxosLZKc79sjLLLABmzxN1d2dn9czy9pSa1-T1vf1Zu-5g86onG5y-rqimOI_TwaTnV2dFU4RkIGYKM4eeO7-wUiTjRPyMSsEGv3lFLccxsiOFMXdy9dMaFCVRKXSxfFHUfZWVHZUecYSH8lpkdZxZfZ0Hpi2gBNxSfNVLNsbTbFhxz1blGFu7u2GY3DOQEYlP8nnizY8Mn-HevLOBkx4ukAkn4hufD33np02OF7Fk);
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #111318;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #292e38;
-          border-radius: 3px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #4A6C6F;
-        }
-      `}</style>
     </div>
   );
 }

@@ -11,10 +11,8 @@ export async function GET(
 
     const playlist = await prisma.playlist.findUnique({
       where: { id: playlistId },
-      include: {
-        videos: true,
-      }
-    })
+      select: { playlistUrl: true },
+    });
 
     if (!playlist) {
       return NextResponse.json(
@@ -24,7 +22,7 @@ export async function GET(
     }
 
     const url = new URL(playlist.playlistUrl);
-    const ytPlaylistId = url.searchParams.get('list');
+    const ytPlaylistId = url.searchParams.get("list");
     if (!ytPlaylistId) {
       return NextResponse.json(
         { message: "Invalid YouTube playlist URL" },
@@ -33,7 +31,6 @@ export async function GET(
     }
 
     const videoCount = await getAmountOfVideosInPlaylist(ytPlaylistId);
-
     if (videoCount === undefined) {
       return NextResponse.json(
         { message: "Could not retrieve video count from YouTube" },
@@ -41,14 +38,15 @@ export async function GET(
       );
     }
 
-    const isSynced = playlist.videos.length === videoCount;
+    const localVideoCount = await prisma.video.count({
+      where: { playlistId },
+    });
 
-    return NextResponse.json(
-      { isSynced },
-      { status: 200 }
-    );
+    const isSynced = localVideoCount === videoCount;
+
+    return NextResponse.json({ isSynced }, { status: 200 });
   } catch (error) {
-    throw `ERROR IN /playlists/check-if-synced/[playlistId] ${error}`;
+    console.error(`ERROR IN /playlists/check-if-synced/[playlistId]`, error);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }
