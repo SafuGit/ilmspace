@@ -5,6 +5,13 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request, { params }: { params: Promise<{ playlistId: string }> }) { 
   try {
     const { playlistId } = await params;
+    // Validate playlistId
+    if (!playlistId || typeof playlistId !== "string") {
+      return NextResponse.json(
+        { message: "Playlist ID is required and must be a string." },
+        { status: 400 }
+      );
+    }
 
     const playlist = await prisma.playlist.findUnique({
       where: { id: playlistId },
@@ -18,8 +25,40 @@ export async function POST(request: Request, { params }: { params: Promise<{ pla
       );
     }
 
+    if (!playlist.playlistUrl || typeof playlist.playlistUrl !== "string") {
+      return NextResponse.json(
+        { message: "Invalid playlist URL" },
+        { status: 400 }
+      );
+    }
+
+    let ytPlaylistId: string | null = null;
     try {
-      syncPlaylistVideos(playlist.id, new URL(playlist.playlistUrl).searchParams.get("list")!);
+      ytPlaylistId = new URL(playlist.playlistUrl).searchParams.get("list");
+    } catch {
+      return NextResponse.json(
+        { message: "Invalid playlist URL" },
+        { status: 400 }
+      );
+    }
+
+    if (!ytPlaylistId) {
+      return NextResponse.json(
+        { message: "Invalid YouTube playlist URL" },
+        { status: 400 }
+      );
+    }
+
+    const playlistIdPattern = /^(PL|UU|LL|FL|RD)[a-zA-Z0-9_-]{32}$|^[a-zA-Z0-9_-]{34}$/;
+    if (!playlistIdPattern.test(ytPlaylistId)) {
+      return NextResponse.json(
+        { message: "Invalid YouTube playlist ID format" },
+        { status: 400 }
+      );
+    }
+
+    try {
+      syncPlaylistVideos(playlist.id, ytPlaylistId);
       return NextResponse.json(
         { message: "Playlist videos sync started" },
         { status: 200 }
