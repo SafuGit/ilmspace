@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
+import Loading from "../shared/Loading";
+import { useRouter } from "next/navigation";
 
 interface DarsViewerProps {
   playlistId: string;
@@ -47,7 +49,10 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
   const [currentTime] = useState(765); // 12:45
   const [duration] = useState(2700); // 45:00
   const [showControls, setShowControls] = useState(false);
-  const [isSynced, setIsSynced] = useState(true);
+  const [isSynced, setIsSynced] = useState<boolean | null>(true);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const pollRef = useRef<number | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const checkIfSynced = async () => {
@@ -63,10 +68,61 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
   }, [playlistId]);
 
   useEffect(() => {
-    if (!isSynced) {
-      
+    // If the playlist is not synced and we are not already syncing, start the sync
+    if (!isSynced && !isSyncing) {
+      let attempts = 0;
+      const maxAttempts = 30; // 30 attempts * interval(2000ms) = 60s
+      const startSync = async () => {
+        setIsSyncing(true);
+        try {
+          const response = await fetch(`/api/playlists/sync-videos/${playlistId}`, { method: 'POST' });
+          const data = await response.json();
+          console.log("Sync started:", data);
+
+          // Poll for sync status until it becomes true or we reach maxAttempts
+          pollRef.current = window.setInterval(async () => {
+            attempts += 1;
+            try {
+              const res = await fetch(`/api/playlists/check-if-synced/${playlistId}`);
+              const json = await res.json();
+              if (json?.isSynced) {
+                setIsSynced(true);
+                setIsSyncing(false);
+                if (pollRef.current) {
+                  clearInterval(pollRef.current);
+                  pollRef.current = null;
+                }
+                // Refresh the app router data to reflect synced videos
+                router.refresh();
+              } else if (attempts >= maxAttempts) {
+                // Stop polling after a timeout period
+                setIsSyncing(false);
+                if (pollRef.current) {
+                  clearInterval(pollRef.current);
+                  pollRef.current = null;
+                }
+                console.warn("Sync polling timed out");
+              }
+            } catch (error) {
+              console.error("Error polling sync status:", error);
+            }
+          }, 2000);
+        } catch (error) {
+          console.error("Failed to start sync:", error);
+          setIsSyncing(false);
+        }
+      };
+
+      startSync();
     }
-  }, [isSynced]);
+
+    return () => {
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    };
+  }, [isSynced, playlistId, isSyncing, router]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -105,6 +161,8 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
   };
 
   const progress = (currentTime / duration) * 100;
+
+  if (!isSynced) return <Loading />;
 
   return (
     <div className="flex h-screen w-full flex-col">
