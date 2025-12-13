@@ -439,7 +439,7 @@ export default function UploadPlaylistPage() {
         </div>
       </main>
 
-      <style jsx global>{`
+      <style dangerouslySetInnerHTML={{__html: `
         .material-symbols-outlined {
           font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
         }
@@ -481,7 +481,7 @@ export default function UploadPlaylistPage() {
           cursor: not-allowed;
           opacity: 0.5;
         }
-      `}</style>
+      `}} />
     </div>
   );
 }
