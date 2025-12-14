@@ -170,6 +170,7 @@ model Notebook {
   books Book[] @relation("BookNotebook")
   pages Page[]
   playlist Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  timestampNotes TimestampNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -206,6 +207,7 @@ model TimestampNote {
   userId String
   bookId String?
   playlistId String?
+  notebookId String?
   videoId String?
   content String
   timestamp Int
@@ -214,6 +216,7 @@ model TimestampNote {
   video Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)
   playlist Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
   book Book? @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  notebook Notebook? @relation(fields: [notebookId], references: [id], onDelete: Cascade)
 }
 
 // model Note {
