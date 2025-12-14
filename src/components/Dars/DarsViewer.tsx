@@ -769,11 +769,53 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
             )}
 
             {activeTab === "playlist" && (
-              <div className="text-center text-text-muted py-8">
-                <span className="material-symbols-outlined text-5xl mb-2">
-                  video_library
-                </span>
-                <p>Playlist view coming soon</p>
+              <div className="flex flex-col gap-2">
+                {videoQueue.map((video, index) => {
+                  const isActive = index === currentIndex;
+
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setCurrentIndex(index);
+                        setIsPlaying(true);
+                      }}
+                      className={`flex items-start gap-3 p-3 rounded-lg text-left transition-all border
+            ${
+              isActive
+                ? "bg-accent-gold/10 border-accent-gold text-accent-gold"
+                : "bg-card-bg border-border hover:bg-border text-white"
+            }`}
+                    >
+                      {/* Episode Number */}
+                      <span className="text-xs font-mono text-text-muted mt-1">
+                        {index + 1}
+                      </span>
+
+                      {/* Title */}
+                      <div className="flex-1 min-w-0">
+                        <p
+                          className={`text-sm font-medium truncate ${
+                            isActive ? "text-accent-gold" : ""
+                          }`}
+                        >
+                          {video.title}
+                        </p>
+
+                        {isActive && (
+                          <span className="text-[10px] uppercase tracking-wide text-accent-gold">
+                            Now Playing
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Play Icon */}
+                      <span className="material-symbols-outlined text-lg opacity-70">
+                        play_arrow
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
