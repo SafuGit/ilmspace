@@ -1,5 +1,6 @@
 "use client";
 
+import { alert } from "@/lib/alert";
 import { fetcher } from "@/lib/fetcher";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -17,6 +18,29 @@ export interface Playlist {
 
 export default function PlaylistsSection({ playlists, mutatePlaylists }: { playlists: Playlist[], mutatePlaylists: () => void }) {
   const [youtubeUrl, setYoutubeUrl] = useState("");
+
+  const handleDeletePlaylist = async (playlistId: string, playlistName: string) => {
+    const confirm = await alert.confirm(
+      `Are you sure you want to delete the playlist "${playlistName}"? This action cannot be undone.`);
+
+    if (!confirm) return;
+
+    try {
+      const response = await fetch(`/api/playlists/delete/${playlistId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        mutatePlaylists();
+        alert.success('Playlist deleted successfully.');
+      } else {
+        alert.error('Failed to delete playlist. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error deleting playlist:', error);
+      alert.error('An error occurred while deleting the playlist.');
+    }
+  };
 
   return (
     <section className="py-20">
@@ -92,15 +116,26 @@ export default function PlaylistsSection({ playlists, mutatePlaylists }: { playl
                     </span>
                     {playlist.books?.length || 0} {playlist.books?.length === 1 ? 'book' : 'books'}
                   </div>
-                  <Link
-                    href={`/dashboard/dars/${playlist.id}`}
-                    className="text-sm font-semibold text-accent-gold hover:text-[#bfa030] flex items-center gap-1"
-                  >
-                    Start Learning
-                    <span className="material-symbols-outlined text-base">
-                      arrow_forward
-                    </span>
-                  </Link>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => handleDeletePlaylist(playlist.id, playlist.name)}
+                      className="text-sm font-semibold text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors"
+                      title="Delete playlist"
+                    >
+                      <span className="material-symbols-outlined text-base">
+                        delete
+                      </span>
+                    </button>
+                    <Link
+                      href={`/dashboard/dars/${playlist.id}`}
+                      className="text-sm font-semibold text-accent-gold hover:text-[#bfa030] flex items-center gap-1"
+                    >
+                      Start Learning
+                      <span className="material-symbols-outlined text-base">
+                        arrow_forward
+                      </span>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
