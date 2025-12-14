@@ -7,9 +7,9 @@ export async function POST(request: Request) {
     if (!body) {
       return new Response("Request body is missing", { status: 400 });
     }
-    const { userId, playlistId, videoId, content, timestamp } = body;
+    const { userId, playlistId, videoId, content, timestamp, notebookId } = body;
 
-    if (!userId || !playlistId || !videoId || !content || timestamp === undefined) {
+    if (!userId || !playlistId || !videoId || !content || timestamp === undefined || !notebookId) {
       return new Response("Missing required fields", { status: 400 });
     }
 
@@ -20,6 +20,7 @@ export async function POST(request: Request) {
         videoId: videoId || null,
         content,
         timestamp,
+        notebookId,
       }
     });
 

@@ -22,6 +22,7 @@ interface TimestampNote {
   content: string;
   timestamp: number;
   createdAt?: string;
+  notebookId: string;
 }
 
 interface Video {
@@ -288,6 +289,7 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
       videoId: currentVideo.id,
       content: currentNote.trim(),
       timestamp: currentTime,
+      notebookId: playlist!.notebook.id,
     };
 
     const tempId = Date.now().toString();
