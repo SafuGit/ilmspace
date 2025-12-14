@@ -6,28 +6,26 @@ import Loading from "../shared/Loading";
 import { useRouter } from "next/navigation";
 import { Playlist } from "../Dashboard/PlaylistsSection";
 import ReactPlayer from "react-player";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
+import { alert } from "@/lib/alert";
 
 interface DarsViewerProps {
   playlistId: string;
 }
 
-interface Note {
-  id: string;
-  timestamp: number;
-  content: string;
-  createdAt: Date;
-}
-
 interface TimestampNote {
-  id: string;
+  id?: string;
   userId: string;
   playlistId: string;
   videoId: string;
   content: string;
   timestamp: number;
+  createdAt?: string;
 }
 
 interface Video {
+  id: string;
   playlistId: string;
   title: string;
   description?: string;
@@ -43,37 +41,17 @@ export interface Notebook {
   description: string;
 }
 
-const getInitialNotes = (): Note[] => {
-  const now = Date.now();
-  return [
-    {
-      id: "1",
-      timestamp: 260,
-      content:
-        "Key point regarding the first principle: Knowledge is knowing Allah, His Prophet, and the religion of Islam with evidence.",
-      createdAt: new Date(now - 120000),
-    },
-    {
-      id: "2",
-      timestamp: 495,
-      content:
-        "Evidence from the Quran regarding the four matters mentioned in Surah Al-Asr.",
-      createdAt: new Date(now - 600000),
-    },
-    {
-      id: "3",
-      timestamp: 690,
-      content:
-        "Remember to cross-reference this with the explanation of Sheikh Ibn Baz.",
-      createdAt: new Date(now - 900000),
-    },
-  ];
-};
-
 export default function DarsViewer({ playlistId }: DarsViewerProps) {
   // TODO: Use playlistId to fetch playlist data from API
   const [activeTab, setActiveTab] = useState<"notes" | "playlist">("notes");
-  const [notes, setNotes] = useState<Note[]>(() => getInitialNotes());
+  const {
+    data: notes,
+    isLoading,
+    mutate: mutateNotes,
+  } = useSWR<TimestampNote[]>(
+    `/api/notebooks/timestamp-note/${playlistId}`,
+    fetcher
+  );
   const [currentNote, setCurrentNote] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0); // 12:45
@@ -94,6 +72,24 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
   const [volume, setVolume] = useState(0.8);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const hideControlsTimeoutRef = useRef<number | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/user/me")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setUserId(data.userId);
+      })
+      .catch((err) => console.error("Failed to fetch user ID:", err));
+  }, []);
+
+  useEffect(() => {
+    const id = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(id);
+  }, []);
 
   const handleNext = () => {
     if (currentIndex < videoQueue.length - 1) {
@@ -283,27 +279,61 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
     };
   }, []);
 
-  const handleAddNote = () => {
-    if (currentNote.trim()) {
-      const newNote: Note = {
-        id: Date.now().toString(),
-        timestamp: currentTime,
-        content: currentNote,
-        createdAt: new Date(),
-      };
-      setNotes([newNote, ...notes]);
-      setCurrentNote("");
+  const handleAddNote = async () => {
+    if (!currentNote.trim() || !currentVideo) return;
+
+    const newNote: TimestampNote = {
+      userId: userId!,
+      playlistId: playlistId,
+      videoId: currentVideo.id,
+      content: currentNote.trim(),
+      timestamp: currentTime,
+    };
+
+    const tempId = Date.now().toString();
+    const tempNote: TimestampNote = {
+      ...newNote,
+      id: tempId,
+      createdAt: new Date().toISOString(),
+    };
+    await mutateNotes([tempNote, ...(notes || [])], false);
+    setCurrentNote("");
+
+    try {
+      const res = await fetch("/api/notebooks/timestamp-note/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newNote),
+      });
+      const savedNote = await res.json();
+
+      if (!res.ok) {
+        alert.error("Failed to save note. Please try again.");
+        throw new Error("Failed to save note");
+      }
+
+      alert.success("Note saved successfully.");
+
+      mutateNotes(
+        [savedNote, ...(notes || []).filter((n) => n.id !== tempId)],
+        false
+      );
+    } catch (error) {
+      console.error("Failed to save note:", error);
+      alert.error("Failed to save note. Please try again.");
+      mutateNotes(notes, false);
     }
   };
 
   const handleDeleteNote = (id: string) => {
-    setNotes(notes.filter((note) => note.id !== id));
+    // setNotes(notes.filter((note) => note.id !== id));
   };
 
   const progress = (currentTime / duration) * 100;
 
   if (!isSynced) return <Loading />;
   if (!playlist) return <Loading />;
+  if (!isMounted) return <Loading />;
 
   return (
     <div className="flex h-screen w-full flex-col">
@@ -717,7 +747,7 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
                     <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider">
-                      Your Notes ({notes.length})
+                      Your Notes ({notes?.length})
                     </h4>
                     <div className="flex gap-2">
                       <button className="text-text-muted hover:text-white">
@@ -733,7 +763,7 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
                     </div>
                   </div>
 
-                  {notes.map((note) => (
+                  {notes?.map((note) => (
                     <div
                       key={note.id}
                       className="relative pl-4 before:absolute before:bottom-0 before:left-0 before:top-0 before:w-0.5 before:bg-border"
@@ -748,7 +778,7 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
                               {formatTime(note.timestamp)}
                             </button>
                             <span className="text-[10px] text-text-muted">
-                              {getRelativeTime(note.createdAt)}
+                              {getRelativeTime(new Date(note.createdAt!))}
                             </span>
                           </div>
                           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -759,7 +789,7 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
                             </button>
                             <button
                               className="p-1 text-text-muted hover:text-red-400"
-                              onClick={() => handleDeleteNote(note.id)}
+                              onClick={() => handleDeleteNote(note.id!)}
                             >
                               <span className="material-symbols-outlined text-[16px]">
                                 delete

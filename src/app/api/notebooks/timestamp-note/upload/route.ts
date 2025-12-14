@@ -4,16 +4,18 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { userId, bookId, playlistId, videoId, content, timestamp } = body;
+    if (!body) {
+      return new Response("Request body is missing", { status: 400 });
+    }
+    const { userId, playlistId, videoId, content, timestamp } = body;
 
-    if (!userId || !bookId || !playlistId || !videoId || !content || timestamp === undefined) {
+    if (!userId || !playlistId || !videoId || !content || timestamp === undefined) {
       return new Response("Missing required fields", { status: 400 });
     }
 
     const newNote = await prisma.timestampNote.create({
       data: {
         userId,
-        bookId: bookId || null,
         playlistId: playlistId || null,
         videoId: videoId || null,
         content,
