@@ -17,7 +17,11 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     // Validate required fields
-    if (!body.name || typeof body.name !== "string" || body.name.trim().length === 0) {
+    if (
+      !body.name ||
+      typeof body.name !== "string" ||
+      body.name.trim().length === 0
+    ) {
       return NextResponse.json(
         { message: "Playlist name is required" },
         { status: 400 }
@@ -39,7 +43,8 @@ export async function POST(req: Request) {
     }
 
     // Validate YouTube playlist URL format
-    const youtubePlaylistRegex = /^https:\/\/(www\.)?youtube\.com\/(playlist\?list=|watch\?v=.+&list=).+$/;
+    const youtubePlaylistRegex =
+      /^https:\/\/(www\.)?youtube\.com\/(playlist\?list=|watch\?v=.+&list=).+$/;
     if (!youtubePlaylistRegex.test(body.playlistUrl)) {
       return NextResponse.json(
         { message: "Invalid YouTube playlist URL format" },
@@ -88,10 +93,7 @@ export async function POST(req: Request) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { message: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
     try {
@@ -103,20 +105,32 @@ export async function POST(req: Request) {
           userId: user.id,
           numberOfEpisodes: body.numberOfEpisodes || 0,
           thumbnailUrl: body.thumbnailUrl || null,
-          // Add book connections if provided
-          books: body.books?.length > 0 ? {
-            connect: body.books.map((book: any) => ({ id: book.id }))
-          } : undefined
+
+          // connect books if provided
+          books: body.books?.length
+            ? {
+                connect: body.books.map((book: any) => ({ id: book.id })),
+              }
+            : undefined,
+
+          notebook: {
+            create: {
+              userId: user.id,
+              name: body.name.trim(), 
+              description: body.description?.trim() || null,
+            },
+          },
         },
         include: {
           books: true,
-        }
+          notebook: true,
+        },
       });
 
       return NextResponse.json(
-        { 
+        {
           message: "Playlist created successfully",
-          playlist 
+          playlist,
         },
         { status: 201 }
       );

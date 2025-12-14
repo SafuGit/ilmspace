@@ -114,11 +114,12 @@ model Book {
   currentPage Int @default(0)
   readingProgress Float @default(0.0)
 
+  notebookId String?
   playlists Playlist[]
   timestampNotes TimestampNote[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  notebook Notebook? @relation("BookNotebook")
+  notebook Notebook? @relation("BookNotebook", fields: [notebookId], references: [id])
 
   @@index([id])
   @@index([title])
@@ -136,7 +137,7 @@ model Playlist {
   books Book[]
   videos Video[]
   timestampNotes TimestampNote[]
-
+  notebook Notebook?
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -161,19 +162,17 @@ model Video {
 model Notebook {
   id String @id @default(cuid())
   userId String @unique
-  bookId String?
-  bookName String?
+  playlistId String? @unique
   name String
   description String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  book Book? @relation("BookNotebook", fields: [bookId, bookName], references: [id, title], onDelete: Cascade)
+  books Book[] @relation("BookNotebook")
   pages Page[]
+  playlist Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([bookId, bookName])
 }
 
 model Page {
