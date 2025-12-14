@@ -489,6 +489,9 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
                         />
                       </div>
                     </div>
+                    <span className="text-sm font-mono">
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </span>
                   </div>
                   <div className="flex items-center gap-4">
                     <button className="hover:text-accent-gold">
