@@ -135,3 +135,104 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #4a6c6f;
 }
+
+/* Notebook styles */
+:root {
+  --serene-teal: #4A6C6F;
+  --deep-navy: #1A2E38;
+  --light-sand: #F7F5EF;
+  --accent-gold: #C5A059;
+  --soft-gray: #B0BEC5;
+  --paper-bg: #fdfbf7;
+  --line-color: rgba(94, 114, 128, 0.15);
+  --ink-color: #2D3047;
+  --wood-dark: #2A1D15;
+  --line-height: 40px;
+}
+
+.wood-texture {
+  background-color: var(--wood-dark);
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.5) 100%), url(https://lh3.googleusercontent.com/aida-public/AB6AXuCDmh63wjHFFFXhnQFffF39VkmJGKuQh1e-pWfH5eGFhLMIqeeSkeHwR7YRDpom6EtLuL2Up-P45xcM3MGdQq2W_IuM2Q6KglS8Sk1oQJfRX8-07ZNAWL33fvcwth7BZxBxfitpK8vChadd2BpIE01vCH6LJzx9G4fRAOXxH4I8L3SiTl8jN8-FfnkcU2hWUTfjWoejAPbyDCCCsPAv1G5VYpFNPpEWEImqe-Trz6tHM6Tc4T5VK-4H_TzOqu7qe-m4JTIdFNrGpbA);
+  background-size: cover;
+  background-blend-mode: overlay;
+}
+
+.notebook-shadow {
+  filter: drop-shadow(0 25px 30px rgba(0, 0, 0, 0.5));
+}
+
+.notebook-page {
+  background-color: var(--paper-bg);
+}
+
+.notebook-page-left {
+  box-shadow: inset -25px 0 40px -10px rgba(0, 0, 0, 0.06), inset 0 0 20px rgba(0, 0, 0, 0.02);
+  border-radius: 2px 0 0 2px;
+  transform-origin: right center;
+}
+
+.notebook-page-right {
+  box-shadow: inset 25px 0 40px -10px rgba(0, 0, 0, 0.06), inset 0 0 20px rgba(0, 0, 0, 0.02);
+  border-radius: 0 2px 2px 0;
+  transform-origin: left center;
+}
+
+.page-lines {
+  background-image: repeating-linear-gradient(transparent, transparent 39px, var(--line-color) 40px);
+  line-height: 40px;
+}
+
+.spine-crease {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25) 40%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.25) 60%, rgba(0, 0, 0, 0.1));
+  z-index: 30;
+}
+
+.font-handwritten { font-family: "Caveat", cursive; }
+.font-scholarly { font-family: "Crimson Text", serif; }
+.font-arabic { font-family: "Amiri", serif; }
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+
+.vignette-overlay {
+  background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.8) 120%);
+}
+
+.writing-cursor {
+  caret-color: var(--serene-teal);
+}
+
+.page-thickness-left {
+  background: linear-gradient(to right, #e3dfd3, #fdfbf7);
+  box-shadow: -1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.page-thickness-right {
+  background: linear-gradient(to left, #e3dfd3, #fdfbf7);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.ink-text {
+  color: var(--ink-color);
+  text-shadow: 0 0 1px rgba(44, 62, 80, 0.1);
+}
+
+[contenteditable]:empty:before {
+  content: attr(placeholder);
+  color: #94a3b8;
+  opacity: 0.6;
+  font-style: italic;
+  pointer-events: none;
+}
+
+[contenteditable]:focus {
+  outline: none;
+}
