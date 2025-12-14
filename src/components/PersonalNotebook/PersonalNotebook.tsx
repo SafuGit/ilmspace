@@ -5,7 +5,7 @@ import SideControls from "./SideControls";
 import NotebookPage from "./NotebookPage";
 import Footer from "./Footer";
 
-export default function PersonalNotebook() {
+export default function PersonalNotebook({ notebookId }: { notebookId: string }) {
   return (
     <div className="wood-texture min-h-screen flex flex-col text-[#d1d5db] font-scholarly selection:bg-(--accent-gold) selection:text-white">
       <div className="vignette-overlay absolute inset-0 pointer-events-none z-0"></div>
