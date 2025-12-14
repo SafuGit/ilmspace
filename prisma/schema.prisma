@@ -208,7 +208,7 @@ model TimestampNote {
   playlistId String?
   videoId String?
   content String
-  timestamp String
+  timestamp Int
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   video Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)

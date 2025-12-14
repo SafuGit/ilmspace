@@ -18,6 +18,15 @@ interface Note {
   createdAt: Date;
 }
 
+interface TimestampNote {
+  id: string;
+  userId: string;
+  playlistId: string;
+  videoId: string;
+  content: string;
+  timestamp: number;
+}
+
 interface Video {
   playlistId: string;
   title: string;
