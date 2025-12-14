@@ -14,18 +14,18 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const { id } = await params;
 
   if (!id) {
-    return NextResponse.json({ error: "BOOK ID NOT PROVIDED" }, { status: 400 });
+    return NextResponse.json({ error: "NOTEBOOK ID NOT PROVIDED" }, { status: 400 });
   }
 
   try {
-    const playlist = await prisma.playlist.findUnique({
+    const notebook = await prisma.notebook.findUnique({
       where: { id, userId },
-      include: { videos: true, books: true, notebook: true },
+      include: { pages: true },
     });
-    if (!playlist) {
-      return NextResponse.json({ error: "PLAYLIST NOT FOUND" }, { status: 404 });
+    if (!notebook) {
+      return NextResponse.json({ error: "NOTEBOOK NOT FOUND" }, { status: 404 });
     }
-    return NextResponse.json(playlist, { status: 200 });
+    return NextResponse.json(notebook, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "INTERNAL SERVER ERROR", details: error },

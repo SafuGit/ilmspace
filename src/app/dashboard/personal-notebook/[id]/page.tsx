@@ -1,3 +1,4 @@
+"use client";
 import PersonalNotebook from "@/components/PersonalNotebook/PersonalNotebook";
 import { useParams } from "next/navigation";
 

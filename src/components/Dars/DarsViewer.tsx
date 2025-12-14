@@ -26,6 +26,14 @@ interface Video {
   duration?: number;
 }
 
+export interface Notebook {
+  id: string;
+  userId: string;
+  playlistId: string;
+  name: string;
+  description: string;
+}
+
 const getInitialNotes = (): Note[] => {
   const now = Date.now();
   return [
@@ -550,12 +558,15 @@ export default function DarsViewer({ playlistId }: DarsViewerProps) {
                   );
                 })()}
                 <div className="flex flex-wrap items-center gap-3">
-                  <button className="flex items-center gap-2 px-5 py-2.5 bg-accent-gold text-background-dark rounded-lg font-bold text-sm hover:bg-[#bfa030] transition-colors shadow-lg shadow-[#d4af37]/10 group">
+                  <Link
+                    href={`/dashboard/personal-notebook/${playlist.notebook.id}`}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-accent-gold text-background-dark rounded-lg font-bold text-sm hover:bg-[#bfa030] transition-colors shadow-lg shadow-[#d4af37]/10 group"
+                  >
                     <span className="material-symbols-outlined text-[20px] group-hover:rotate-12 transition-transform">
                       menu_book
                     </span>
-                    Open Companion Book
-                  </button>
+                    Open Notebook
+                  </Link>
                   <button className="flex items-center gap-2 px-4 py-2.5 bg-card-bg text-white rounded-lg font-medium text-sm border border-border hover:bg-border transition-colors">
                     <span className="material-symbols-outlined text-[20px]">
                       file_download

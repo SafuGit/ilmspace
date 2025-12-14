@@ -5,6 +5,7 @@ import { fetcher } from "@/lib/fetcher";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
+import { Notebook } from "../Dars/DarsViewer";
 
 export interface Playlist {
   id: string;
@@ -14,6 +15,7 @@ export interface Playlist {
   thumbnailUrl: string;
   numberOfEpisodes: number;
   books: object[];
+  notebook: Notebook;
 }
 
 export default function PlaylistsSection({ playlists, mutatePlaylists }: { playlists: Playlist[], mutatePlaylists: () => void }) {

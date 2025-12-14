@@ -4,8 +4,17 @@ import Header from "./Header";
 import SideControls from "./SideControls";
 import NotebookPage from "./NotebookPage";
 import Footer from "./Footer";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
+import Loading from "../shared/Loading";
 
 export default function PersonalNotebook({ notebookId }: { notebookId: string }) {
+  const { data, isLoading } = useSWR(`/api/notebooks/${notebookId}`, fetcher);
+
+  if (isLoading) return <Loading />
+
+  console.log("Notebook data:", data);
+
   return (
     <div className="wood-texture min-h-screen flex flex-col text-[#d1d5db] font-scholarly selection:bg-(--accent-gold) selection:text-white">
       <div className="vignette-overlay absolute inset-0 pointer-events-none z-0"></div>
