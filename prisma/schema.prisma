@@ -25,6 +25,8 @@ model User {
   Authenticator Authenticator[]
   books Book[]
   playlists Playlist[]
+  notebook Notebook?
+  timestampNotes TimestampNote[]
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -113,10 +115,14 @@ model Book {
   readingProgress Float @default(0.0)
 
   playlists Playlist[]
+  timestampNotes TimestampNote[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notebook Notebook? @relation("BookNotebook")
+
   @@index([id])
   @@index([title])
+  @@unique([id, title])
 }
 
 model Playlist {
@@ -129,6 +135,7 @@ model Playlist {
   numberOfEpisodes Int?
   books Book[]
   videos Video[]
+  timestampNotes TimestampNote[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -145,26 +152,89 @@ model Video {
   duration Int?
 
   playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  timestampNotes TimestampNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Note {
+model Notebook {
   id String @id @default(cuid())
-  noteType NoteTypes
+  userId String @unique
+  bookId String?
+  bookName String?
+  name String
+  description String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book Book? @relation("BookNotebook", fields: [bookId, bookName], references: [id, title], onDelete: Cascade)
+  pages Page[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([bookId, bookName])
+}
+
+model Page {
+  id String @id @default(cuid())
+  notebookId String
+  pageNumber Int
+  page1 String?
+  page2 String?
+  page3 String?
+  page4 String?
+  page5 String?
+  page6 String?
+  page7 String?
+  page8 String?
+  page9 String?
+  page10 String?
+  page11 String?
+  page12 String?
+  page13 String?
+  page14 String?
+  page15 String?
+
+  notebook Notebook @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TimestampNote {
+  id String @id @default(cuid())
   userId String
   bookId String?
   playlistId String?
+  videoId String?
   content String
-  pageNumber Int?
-  timestamp String?
+  timestamp String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  playlist Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  book Book? @relation(fields: [bookId], references: [id], onDelete: Cascade)
 }
 
-enum NoteTypes {
-  dars
-  book
-}
+// model Note {
+//   id String @id @default(cuid())
+//   noteType NoteTypes
+//   userId String
+//   bookId String?
+//   playlistId String?
+//   content String
+//   pageNumber Int?
+//   timestamp String?
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   page Page @relation(fields: [pageNumber], references: [pageNumber], onDelete: Cascade)
+// }
+
+// enum NoteTypes {
+//   dars
+//   book
+// }
 
 enum Categories {
   Quran
