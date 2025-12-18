@@ -6,9 +6,10 @@ type Props = {
   title?: string;
   initialContent?: string;
   rtl?: boolean;
+  pageNumber?: number;
 };
 
-export default function NotebookPage({ side, title, initialContent = "", rtl }: Props) {
+export default function NotebookPage({ side, title, initialContent = "", rtl, pageNumber }: Props) {
   const isLeft = side === "left";
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -54,8 +55,8 @@ export default function NotebookPage({ side, title, initialContent = "", rtl }: 
         />
       </div>
       <div className={`absolute bottom-4 ${isLeft ? "left-8" : "right-8"} font-handwritten text-xl text-slate-400 select-none`}> 
-        {isLeft ? "142" : "143"}
-      </div>
+            {pageNumber ?? ""}
+          </div>
     </div>
   );
 }
