@@ -20,7 +20,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   try {
     const notebook = await prisma.notebook.findUnique({
       where: { id, userId },
-      include: { pages: true },
+      include: { pages: true, playlist: true, timestampNotes: true },
     });
     if (!notebook) {
       return NextResponse.json({ error: "NOTEBOOK NOT FOUND" }, { status: 404 });

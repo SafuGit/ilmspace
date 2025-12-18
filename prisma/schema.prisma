@@ -197,9 +197,10 @@ model Page {
   page15 String?
 
   notebook Notebook @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+  timestampNotes TimestampNotePages[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model TimestampNote {
@@ -212,11 +213,28 @@ model TimestampNote {
   content String
   timestamp Int
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   video Video? @relation(fields: [videoId], references: [id], onDelete: Cascade)
   playlist Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
   book Book? @relation(fields: [bookId], references: [id], onDelete: Cascade)
   notebook Notebook? @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+  pages TimestampNotePages[]
+}
+
+
+model TimestampNotePages {
+  id String @id @default(cuid())
+  timestampNoteId String
+  pageId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  timestampNote TimestampNote @relation(fields: [timestampNoteId], references: [id], onDelete: Cascade)
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
 }
 
 // model Note {
