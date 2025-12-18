@@ -119,6 +119,7 @@ export async function POST(request: Request) {
             for (let j = 0; j < remaining.length; j++) {
               updateData[lineFields[start + j]] = remaining[j];
             }
+            updateData.type = "timestamp";
             const updated = await tx.page.update({ where: { id: lastPage.id }, data: updateData as any });
             firstLinePageId = updated.id;
             createdPages.push(updated);
@@ -149,6 +150,7 @@ export async function POST(request: Request) {
               for (let j = 0; j < chunk.length; j++) {
                 updateData[lineFields[tailStart + j]] = chunk[j];
               }
+              updateData.type = "timestamp";
               const updated = await tx.page.update({ where: { id: lastPage.id }, data: updateData as any });
               if (!firstLinePageId && chunk.length > 0) firstLinePageId = updated.id;
               createdPages.push(updated);
