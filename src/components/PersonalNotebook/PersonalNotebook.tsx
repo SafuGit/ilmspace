@@ -65,6 +65,7 @@ export default function PersonalNotebook({ notebookId }: { notebookId: string })
                 side="left"
                 title={data?.name || ""}
                 pageNumber={leftPage?.pageNumber}
+                type={leftPage?.type}
                 initialContent={pageToContent(leftPage)}
               />
             </div>
@@ -78,6 +79,7 @@ export default function PersonalNotebook({ notebookId }: { notebookId: string })
                 title={data?.playlist?.name || ""}
                 rtl
                 pageNumber={rightPage?.pageNumber}
+                type={rightPage?.type}
                 initialContent={pageToContent(rightPage)}
               />
             </div>
