@@ -92,7 +92,7 @@ export async function POST(request: Request) {
 
       // Helper to create a page with up to 15 lines from an array
       const createPageWithLines = async (linesChunk: string[], pgNumber: number) => {
-        const data: Record<string, any> = { notebookId, pageNumber: pgNumber };
+        const data: Record<string, any> = { notebookId, pageNumber: pgNumber, type: "timestamp" };
         for (let i = 0; i < linesChunk.length && i < 15; i++) {
           data[lineFields[i]] = linesChunk[i];
         }
