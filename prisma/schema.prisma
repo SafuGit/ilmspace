@@ -180,21 +180,21 @@ model Page {
   id String @id @default(cuid())
   notebookId String
   pageNumber Int
-  page1 String?
-  page2 String?
-  page3 String?
-  page4 String?
-  page5 String?
-  page6 String?
-  page7 String?
-  page8 String?
-  page9 String?
-  page10 String?
-  page11 String?
-  page12 String?
-  page13 String?
-  page14 String?
-  page15 String?
+  line1 String?
+  line2 String?
+  line3 String?
+  line4 String?
+  line5 String?
+  line6 String?
+  line7 String?
+  line8 String?
+  line9 String?
+  line10 String?
+  line11 String?
+  line12 String?
+  line13 String?
+  line14 String?
+  line15 String?
 
   notebook Notebook @relation(fields: [notebookId], references: [id], onDelete: Cascade)
   timestampNotes TimestampNotePages[]
